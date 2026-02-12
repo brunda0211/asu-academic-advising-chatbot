@@ -47,7 +47,6 @@ All work produced is open source. More information can be found in the GitHub re
 | [Directories](#directories)                         | General project directory structure                      |
 | [Modification Guide](#modification-guide)           | Guide for developers extending the project               |
 | [Credits](#credits)                                 | Contributors and acknowledgments                         |
-| [Disclaimers](#disclaimers)                         | Important disclaimers and legal notices                   |
 | [License](#license)                                 | License information                                      |
 
 ---
