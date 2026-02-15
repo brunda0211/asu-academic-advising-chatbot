@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Security Check",
+  "description": "Run intelligent security checks using cdk-nag and/or ASH based on context. Analyzes results and provides actionable remediation guidance.",
+  "version": "1",
+  "when": {
+    "type": "promptSubmit"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "The user has requested a security check. Follow this workflow:\n\n1. DETERMINE SCOPE:\n   - If user specified files/directories, scan only those\n   - If user mentioned 'CDK', 'infrastructure', or 'CloudFormation', focus on cdk-nag\n   - If user mentioned 'Lambda', 'Python', 'code', 'secrets', or 'dependencies', focus on ASH\n   - If user said 'full' or 'comprehensive', run both tools\n   - Default: Run both cdk-nag and ASH on entire codebase\n\n2. SELECT TOOLS AND COMMANDS:\n   A. cdk-nag (CDK/CloudFormation infrastructure security):\n      - Command: cd backend && npx cdk synth 2>&1\n      - Look for: Lines with [Error] or [Warning] containing rule IDs (e.g., AwsSolutions-IAM4)\n      - Note: cdk-nag must be installed (npm install cdk-nag) and integrated in backend/bin/app.ts\n   B. ASH (Comprehensive code, secrets, dependencies, IaC scanning):\n      - Installation check: uvx --version\n      - Command: uvx git+https://github.com/awslabs/automated-security-helper.git@v3.1.12 [options]\n      - Modes: --mode local (fast), --mode container (comprehensive), --mode precommit (fastest)\n      - Key options: --source-dir, --output-dir, --scanners, --fail-on-findings\n\n3. RUN SELECTED TOOLS:\n   - Execute appropriate commands based on scope\n   - For ASH: Use full uvx command with git URL\n   - Check if tools are installed before running\n\n4. PARSE RESULTS:\n   - cdk-nag: Extract [Error|Warning at /Path] AwsSolutions-XXX lines from synthesis output\n   - ASH: Read .ash/ash_output/ash_aggregated_results.json, group by severity\n   - Group findings by severity (Critical > High > Medium > Low)\n\n5. PRIORITIZE: Critical/High first, then secrets exposure, IAM overpermissions, encryption issues, dependency vulns\n\n6. PROVIDE REMEDIATION:\n   - Explain risk, show problematic code with file path and line number\n   - Provide concrete fix with code example\n   - For cdk-nag: Show CDK fix OR NagSuppressions\n   - For ASH: Show code fix OR suppression comment\n   - Reference security-practices.md steering file\n\n7. OFFER TO FIX: Ask if user wants fixes applied, prioritize by severity, document suppressions with ADR format\n\n8. SUMMARY: Total findings by severity, breakdown by tool, fixes applied, recommendations\n\nIMPORTANT: Always use full uvx command with git URL for ASH. cdk-nag runs during synthesis. Parse actual output - don't hallucinate findings. Reference security-practices.md for CIC standards."
+  }
+}

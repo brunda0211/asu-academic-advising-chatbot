@@ -65,7 +65,7 @@ All work produced is open source. More information can be found in the GitHub re
 > 
 > Save the diagram as `docs/media/architecture.png` (or .jpeg/.jpg)
 
-For a detailed explanation of the architecture, see the [Architecture Deep Dive](./docs/architectureDeepDive.md).
+For a detailed explanation of the architecture and architectural decisions, see the [Architecture Deep Dive](./docs/architectureDeepDive.md).
 
 ---
 
@@ -165,4 +165,3 @@ This application was developed by:
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
-
