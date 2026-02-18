@@ -4,14 +4,12 @@
   "description": "When editing Lambda or CDK files that involve Bedrock model calls, automatically activate the Strands power and consult its documentation for correct patterns, model configuration, and best practices.",
   "version": "1",
   "when": {
-    "type": "fileEdited",
-    "patterns": [
-      "backend/lambda/**/*.py",
-      "backend/lib/**/*.ts"
-    ]
+    "type": "promptSubmit"
   },
   "then": {
     "type": "askAgent",
     "prompt": "Check if the edited file contains Bedrock-related code (e.g., bedrock, bedrock-runtime, InvokeModel, invoke_model, BedrockModel, foundation model references, or model IDs like anthropic.claude, amazon.titan). If it does, activate the Strands power (kiroPowers action=\"activate\" powerName=\"strands\") and search its docs (search_docs) for relevant patterns to ensure the implementation follows Strands SDK best practices. Also verify the code follows CIC security standards: Bedrock permissions scoped to specific model ARNs (never bedrock:*), no hardcoded API keys, model outputs sanitized, and invocations logged. If the file has no Bedrock-related code, do nothing."
-  }
+  },
+  "workspaceFolderName": "Repository-Template",
+  "shortName": "strands-bedrock-assist"
 }
