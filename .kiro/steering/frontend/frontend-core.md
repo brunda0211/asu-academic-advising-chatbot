@@ -1,11 +1,11 @@
 ---
 inclusion: fileMatch
-fileMatchPattern: "frontend/**/*"
+fileMatchPattern: "frontend/**/tsconfig.json,frontend/**/next.config.*,frontend/**/app/**/*,frontend/**/lib/**/config*,frontend/**/lib/**/utils*,frontend/**/.env*"
 ---
 
-# Frontend Development Standards
+# Frontend Core Standards
 
-Next.js patterns and standards for CIC frontend projects.
+Core Next.js configuration, project structure, and TypeScript setup for CIC frontend projects.
 
 ## Technology Stack
 
@@ -60,52 +60,6 @@ frontend/
 ├── next.config.ts
 ├── postcss.config.mjs
 └── tailwind.config.ts
-```
-
-## Styling
-
-**Tailwind CSS v4+ (Required)**
-
-```typescript
-// tailwind.config.ts
-import type { Config } from "tailwindcss";
-
-const config: Config = {
-  content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
-  theme: { extend: {} },
-  plugins: [],
-};
-export default config;
-```
-
-```javascript
-// postcss.config.mjs
-export default {
-  plugins: { tailwindcss: {}, autoprefixer: {} }
-};
-```
-
-**Typography** - Use Next.js font optimization:
-
-```typescript
-import { Geist_Sans, Poppins } from 'next/font/google';
-
-const geistSans = Geist_Sans({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-export default function RootLayout({ children }) {
-  return (
-    <html lang="en" className={geistSans.variable}>
-      <body className={geistSans.className}>{children}</body>
-    </html>
-  );
-}
 ```
 
 ## API Integration
@@ -198,108 +152,6 @@ while (true) {
 ```
 
 **UI patterns**: Loading states, character-by-character streaming, collapsible reasoning blocks
-
-## State Management
-
-### Context API
-
-```typescript
-// contexts/LanguageContext.tsx
-'use client';
-
-import { createContext, useContext, useState, ReactNode } from 'react';
-
-const LanguageContext = createContext<{language: string; setLanguage: (lang: string) => void} | undefined>(undefined);
-
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState('en');
-  return <LanguageContext.Provider value={{ language, setLanguage }}>{children}</LanguageContext.Provider>;
-}
-
-export function useLanguage() {
-  const context = useContext(LanguageContext);
-  if (!context) throw new Error('useLanguage must be used within LanguageProvider');
-  return context;
-}
-```
-
-**Usage in layout**:
-```typescript
-// app/layout.tsx
-import { LanguageProvider } from '@/contexts/LanguageContext';
-
-export default function RootLayout({ children }) {
-  return (
-    <html lang="en">
-      <body><LanguageProvider>{children}</LanguageProvider></body>
-    </html>
-  );
-}
-```
-
-### Custom Hooks
-
-```typescript
-// hooks/useStreamingChat.ts
-'use client';
-
-import { useState, useCallback } from 'react';
-
-export function useStreamingChat() {
-  const [messages, setMessages] = useState([]);
-  const [isStreaming, setIsStreaming] = useState(false);
-  
-  const sendMessage = useCallback(async (text: string) => {
-    setIsStreaming(true);
-    try {
-      // Implementation
-    } finally {
-      setIsStreaming(false);
-    }
-  }, []);
-  
-  return { messages, isStreaming, sendMessage };
-}
-```
-
-**Rules**: Add `'use client'`, use `useCallback` for functions, use `useMemo` for expensive computations
-
-## Internationalization
-
-**Use react-i18next**:
-```typescript
-import { useTranslation } from 'react-i18next';
-const { t } = useTranslation();
-<p>{t('welcome.message')}</p>
-```
-
-**Structure**: `public/locales/{lang}/common.json`
-**Features**: Browser detection, user preference storage, manual switcher
-
-## Component Patterns
-
-**Chat interfaces**: Separate user/assistant messages, markdown rendering with `react-markdown`, avatars, timestamps, citations, retry/rating actions
-
-**Forms**: Controlled components, validation before submission, loading states, error display, success feedback
-
-**Responsive design**: Mobile-first, breakpoints (480px, 600px, 768px, 1024px), drawer/sidebar for mobile, touch-friendly buttons (min 44x44px)
-
-## AWS Integration
-
-```typescript
-// components/AmplifyConfigClient.tsx
-import { Amplify } from 'aws-amplify';
-import amplifyOutputs from '@/amplify_outputs.json';
-Amplify.configure(amplifyOutputs);
-```
-
-**Common integrations**: Cognito (auth), S3 (file uploads), Bedrock (AI), Lambda Function URLs (API)
-
-## Performance & Testing
-
-**Optimization**: Dynamic imports for heavy components, Next.js Image component, cache API responses, sessionStorage for temp data
-
-**Testing**: `@testing-library/react`, `@testing-library/jest-dom`, `@testing-library/user-event`
 
 ## Build & Deployment
 
