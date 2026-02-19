@@ -4,7 +4,7 @@
   "description": "When editing Lambda or CDK files that involve Bedrock model calls, automatically activate the Strands power and consult its documentation for correct patterns, model configuration, and best practices.",
   "version": "1",
   "when": {
-    "type": "promptSubmit"
+    "type": "userTriggered"
   },
   "then": {
     "type": "askAgent",

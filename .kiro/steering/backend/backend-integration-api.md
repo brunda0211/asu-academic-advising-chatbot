@@ -1,6 +1,6 @@
 ---
 inclusion: fileMatch
-fileMatchPattern: "frontend/**/lib/**/api*,frontend/**/lib/**/stream*,frontend/**/hooks/**/use*Chat*,frontend/**/hooks/**/use*Stream*"
+fileMatchPattern: "frontend/**/lib/**/*api*,frontend/**/lib/**/*stream*,frontend/**/lib/**/*client*,frontend/**/hooks/**/use*Chat*,frontend/**/hooks/**/use*Stream*,frontend/**/hooks/**/use*Api*"
 ---
 
 # Backend Integration: API & Streaming

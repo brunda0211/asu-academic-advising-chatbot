@@ -1,6 +1,6 @@
 ---
 inclusion: fileMatch
-fileMatchPattern: "frontend/**/tailwind.config.*,frontend/**/postcss.config.*,frontend/**/*.css,frontend/**/components/**/*.tsx"
+fileMatchPattern: "frontend/**/tailwind.config.*,frontend/**/postcss.config.*,frontend/**/*.css,frontend/**/components/**/*.tsx,frontend/**/components/**/*.ts,frontend/**/components/**/*.jsx"
 ---
 
 # Frontend Styling Standards
