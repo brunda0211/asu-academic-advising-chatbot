@@ -1,6 +1,6 @@
 ---
 inclusion: fileMatch
-fileMatchPattern: "frontend/**/contexts/**/*,frontend/**/hooks/**/use*.ts,frontend/**/hooks/**/use*.tsx,frontend/**/lib/**/i18n*,frontend/**/locales/**/*"
+fileMatchPattern: "frontend/**/contexts/**/*,frontend/**/hooks/**/use*.ts,frontend/**/hooks/**/use*.tsx,frontend/**/lib/**/i18n*,frontend/**/locales/**/*,frontend/**/hooks/**/*.ts,frontend/**/hooks/**/*.tsx"
 ---
 
 # Frontend State Management & Internationalization

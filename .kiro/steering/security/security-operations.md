@@ -1,6 +1,6 @@
 ---
 inclusion: fileMatch
-fileMatchPattern: "**/lib/**/*stepfunctions*.ts,**/lib/**/*sqs*.ts,**/lib/**/*alarm*.ts,**/lambda/**/*error*,**/lambda/**/*retry*,**/lambda/**/*log*"
+fileMatchPattern: "backend/lib/**/*stack*.ts,backend/lib/**/*stepfunctions*.ts,backend/lib/**/*sqs*.ts,backend/lib/**/*alarm*.ts,backend/lambda/**/*error*,backend/lambda/**/*retry*,backend/lambda/**/*log*,backend/lambda/**/index.py"
 ---
 
 # Security: Operations & Resilience

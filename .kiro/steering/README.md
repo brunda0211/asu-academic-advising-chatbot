@@ -10,10 +10,10 @@ Organized guidance for CIC projects. Files auto-load based on context to minimiz
 ├── ASU-CIC-architectural-standards.md          # Core principles (always loaded)
 ├── security-check-workflow.md                  # Security check workflow (manual)
 ├── backend/
-│   ├── backend-standards.md                    # CDK/Lambda patterns
-│   ├── backend-integration-api.md              # API & streaming patterns
-│   ├── backend-integration-aws.md              # AWS service integration
-│   └── backend-integration-patterns.md         # Error handling & performance
+│   ├── backend-standards.md                    # CDK/Lambda patterns (all backend files)
+│   ├── backend-integration-api.md              # API & streaming patterns (frontend lib files)
+│   ├── backend-integration-aws.md              # AWS service integration (frontend lib files)
+│   └── backend-integration-patterns.md         # Error handling & performance (frontend lib/test files)
 ├── frontend/
 │   ├── frontend-core.md                        # Next.js core & TypeScript
 │   ├── frontend-styling.md                     # Tailwind & responsive design
@@ -34,25 +34,23 @@ Organized guidance for CIC projects. Files auto-load based on context to minimiz
 
 ### Auto-loaded by File Pattern (Targeted)
 
-**Backend Integration** (frontend files only):
-- `backend-integration-api.md` - Loads for API/streaming files (api*, stream*, useChat*, useStream*)
-- `backend-integration-aws.md` - Loads for AWS service files (s3*, bedrock*, cognito*, aws*)
-- `backend-integration-patterns.md` - Loads for error/test files (error*, retry*, fetch*, logger*, tests)
+**Backend (AWS CDK + Lambda — `backend/` directory)**:
+- `backend-standards.md` - Loads for ALL files under `backend/**/*` (CDK TypeScript + Lambda Python)
+- `security-iam-secrets.md` - Loads for `backend/lib/**/*.ts`, `backend/bin/**/*.ts` (every CDK file triggers IAM review)
+- `security-data-encryption.md` - Loads for `backend/lib/**/*stack*.ts`, S3/DynamoDB CDK constructs, Lambda storage handlers
+- `security-operations.md` - Loads for `backend/lib/**/*stack*.ts`, Lambda index handlers, error/retry/log files
+- `security-code-dependencies.md` - Loads for `backend/lambda/**/*.py`, `requirements.txt`, agent/strands/bedrock Lambda files
+- `security-compliance.md` - Loads for `backend/lib/**/*stack*.ts`, `backend/bin/**/*.ts`, docs files
 
-**Frontend** (frontend files only):
-- `frontend-core.md` - Loads for config/core files (tsconfig, next.config, app/*, config*, utils*)
-- `frontend-styling.md` - Loads for styling files (tailwind.config, postcss.config, *.css, components)
-- `frontend-state-i18n.md` - Loads for state/i18n files (contexts/*, hooks/use*, i18n*, locales/*)
+**Frontend (Next.js — `frontend/` directory)**:
+- `frontend-core.md` - Loads for `frontend/app/**/*`, `frontend/lib/**/*.ts`, tsconfig, next.config, config/utils files
+- `frontend-styling.md` - Loads for tailwind.config, postcss.config, `*.css`, `frontend/components/**/*`
+- `frontend-state-i18n.md` - Loads for `frontend/contexts/**/*`, `frontend/hooks/**/*.ts`, i18n/locales files
 
-**Backend** (backend files only):
-- `backend-standards.md` - Loads for all backend TypeScript/Python files
-
-**Security** (targeted by concern):
-- `security-iam-secrets.md` - Loads for IAM/policy/secret files
-- `security-data-encryption.md` - Loads for S3/DynamoDB files
-- `security-code-dependencies.md` - Loads for Python/dependency files
-- `security-operations.md` - Loads for error handling/observability files
-- `security-compliance.md` - Loads for documentation files
+**Backend Integration patterns (frontend files that call the backend)**:
+- `backend-integration-api.md` - Loads for `frontend/lib/**/*api*`, `*stream*`, `*client*`, `hooks/use*Chat*`, `use*Stream*`, `use*Api*`
+- `backend-integration-aws.md` - Loads for `frontend/lib/**/*s3*`, `*bedrock*`, `*cognito*`, `*aws*`, `*upload*`, `*storage*`
+- `backend-integration-patterns.md` - Loads for `frontend/lib/**/*error*`, `*retry*`, `*fetch*`, `*logger*`, `*utils*`, test files
 
 ### Manual Reference Only
 - `security-check-workflow.md` - Referenced by Security Check hook
@@ -60,12 +58,22 @@ Organized guidance for CIC projects. Files auto-load based on context to minimiz
 
 ## Usage
 
-Steering files automatically load based on specific file patterns:
-- Editing `frontend/lib/apiClient.ts` → Loads backend-integration-api
-- Editing `frontend/lib/s3Upload.ts` → Loads backend-integration-aws
-- Editing `backend/lib/my-stack.ts` (with IAM) → Loads backend-standards + security-iam-secrets
-- Editing `frontend/tailwind.config.ts` → Loads frontend-styling
-- Editing `frontend/contexts/AuthContext.tsx` → Loads frontend-state-i18n
+Steering files automatically load based on file patterns. Examples for this project:
+
+**Backend (AWS CDK)**:
+- Editing `backend/lib/backend-stack.ts` → Loads `backend-standards` + `security-iam-secrets` + `security-data-encryption` + `security-operations` + `security-compliance`
+- Editing `backend/bin/backend.ts` → Loads `backend-standards` + `security-iam-secrets` + `security-compliance`
+- Editing `backend/lambda/orchestrator/index.py` → Loads `backend-standards` + `security-code-dependencies` + `security-operations`
+- Editing `backend/lambda/orchestrator/requirements.txt` → Loads `backend-standards` + `security-code-dependencies`
+
+**Frontend (Next.js)**:
+- Editing `frontend/app/page.tsx` → Loads `frontend-core`
+- Editing `frontend/lib/apiClient.ts` → Loads `frontend-core` + `backend-integration-api`
+- Editing `frontend/lib/s3Upload.ts` → Loads `frontend-core` + `backend-integration-aws`
+- Editing `frontend/components/ChatMessage.tsx` → Loads `frontend-styling`
+- Editing `frontend/hooks/useChat.ts` → Loads `frontend-state-i18n`
+- Editing `frontend/tailwind.config.ts` → Loads `frontend-styling`
+- Editing `frontend/contexts/SessionContext.tsx` → Loads `frontend-state-i18n`
 
 To manually reference a file: `#security-check-workflow.md`
 
@@ -75,3 +83,4 @@ To manually reference a file: `#security-check-workflow.md`
 - **Organized by domain** - Easy to find and maintain
 - **Comprehensive coverage** - All original content preserved
 - **Smart auto-loading** - Right guidance at the right time
+- **Backend/frontend separation** - `backend/` patterns never bleed into `frontend/` and vice versa

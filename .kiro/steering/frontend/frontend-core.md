@@ -1,6 +1,6 @@
 ---
 inclusion: fileMatch
-fileMatchPattern: "frontend/**/tsconfig.json,frontend/**/next.config.*,frontend/**/app/**/*,frontend/**/lib/**/config*,frontend/**/lib/**/utils*,frontend/**/.env*"
+fileMatchPattern: "frontend/**/tsconfig.json,frontend/**/next.config.*,frontend/**/app/**/*,frontend/**/lib/**/config*,frontend/**/lib/**/utils*,frontend/**/.env*,frontend/**/lib/**/*.ts,frontend/**/lib/**/*.tsx"
 ---
 
 # Frontend Core Standards

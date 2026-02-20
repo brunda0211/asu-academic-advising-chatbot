@@ -4,7 +4,7 @@
   "description": "When editing CDK stack or Step Functions files that define AI workflows (Bedrock in Step Functions, chained Lambda calls with model invocations, AI pipeline orchestration), activate the Strands power for architecture guidance.",
   "version": "1",
   "when": {
-    "type": "promptSubmit"
+    "type": "userTriggered"
   },
   "then": {
     "type": "askAgent",

@@ -4,7 +4,7 @@
   "description": "When editing files that involve AI agent patterns (tool-calling, multi-turn conversations, agent orchestration), activate the Strands power and consult its docs for correct agent construction, tool definitions, and conversation management.",
   "version": "1",
   "when": {
-    "type": "promptSubmit"
+    "type": "userTriggered"
   },
   "then": {
     "type": "askAgent",
