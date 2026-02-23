@@ -159,57 +159,9 @@ Use CDK grant methods first (`table.grantReadWriteData(fn)`, `bucket.grantRead(f
 
 ## Security Scanning with cdk-nag
 
-Integrate cdk-nag to validate CDK code against AWS best practices during synthesis.
+cdk-nag is integrated directly in `backend/lib/backend-stack.ts` via `Aspects.of(this).add(new AwsSolutionsChecks({ verbose: true }))`. It runs automatically on every `cdk synth` and `cdk deploy` — no extra setup needed.
 
-**Installation**:
-```bash
-cd backend
-npm install cdk-nag
-```
-
-**Integration** (add to `backend/bin/app.ts`):
-```typescript
-import { App, Aspects } from 'aws-cdk-lib';
-import { AwsSolutionsChecks, NagSuppressions } from 'cdk-nag';
-import { MyStack } from '../lib/my-stack';
-
-const app = new App();
-const stack = new MyStack(app, 'MyStack');
-
-// Add security checks
-Aspects.of(app).add(new AwsSolutionsChecks({ verbose: true }));
-
-app.synth();
-```
-
-**Suppressing findings** (when justified):
-```typescript
-// ADR: Suppressing AwsSolutions-IAM4 for AWS managed policy
-// Decision Date: 2024-02-13
-// Rationale: AWSLambdaBasicExecutionRole required for CloudWatch Logs integration
-// Alternative: Custom policy (rejected - increases maintenance burden)
-NagSuppressions.addResourceSuppressions(lambdaFunction, [
-  {
-    id: 'AwsSolutions-IAM4',
-    reason: 'AWS managed policy required for CloudWatch Logs. See ADR in architectureDeepDive.md',
-  },
-]);
-```
-
-**Common findings**:
-- `AwsSolutions-IAM4`: AWS managed policies (suppress with justification if needed for service integration)
-- `AwsSolutions-IAM5`: Wildcard permissions (fix by scoping to specific resources)
-- `AwsSolutions-S1`: S3 access logging (enable if bucket stores sensitive data)
-- `AwsSolutions-L1`: Lambda runtime version (update to latest supported runtime)
-
-**Running manually**:
-```bash
-cd backend
-npx cdk synth --quiet
-# Look for [Error] or [Warning] lines with AwsSolutions-* rule IDs
-```
-
-**Using Security Check hook**: Ask Kiro "Run a security check" to automatically run cdk-nag, parse results, and get remediation guidance. See `.kiro/steering/SECURITY_CHECK_HOOK.md` for details.
+When findings appear, either fix the resource config or suppress with an ADR-format reason using `NagSuppressions.addResourceSuppressions()`. See `backend-stack.ts` for the pattern.
 
 ## Documenting Architectural Decisions
 
