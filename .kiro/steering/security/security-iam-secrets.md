@@ -24,7 +24,7 @@ IAM least privilege and secrets management best practices for CIC projects.
 | **No `iam:*` ever** | This is a privilege escalation vector. If your deployment needs to create roles, use a narrowly scoped deployment role created out of band. |
 | **One role per function** | Each Lambda function or ECS task gets its own IAM role with only the permissions that specific function requires. |
 | **Add conditions** | Use conditions like `aws:SourceAccount`, `aws:SourceArn`, or `aws:PrincipalOrgID` to restrict trust relationships. |
-| **Review with tooling** | Run `cdk-nag` or `cfn-nag` on every synthesized template before deployment. |
+| **cdk-nag enforces automatically** | `AwsSolutionsChecks` in `backend-stack.ts` catches wildcard actions/resources, managed policies, and overpermissive roles on every `cdk synth`. Fix findings before suppressing. |
 
 ### Example: Before and After
 

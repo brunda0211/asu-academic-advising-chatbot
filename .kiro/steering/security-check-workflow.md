@@ -18,17 +18,10 @@ Parse the user's message for scope:
 ### 2. SELECT TOOLS AND COMMANDS
 
 **A. cdk-nag (CDK/CloudFormation infrastructure security)**
-- **Installation required**: `cd backend && npm install cdk-nag`
-- **Integration required**: Add to `backend/bin/backend.ts`:
-  ```typescript
-  import { Aspects } from 'aws-cdk-lib';
-  import { AwsSolutionsChecks } from 'cdk-nag';
-  // After creating app and stacks:
-  Aspects.of(app).add(new AwsSolutionsChecks({ verbose: true }));
-  ```
+- **Already integrated**: `AwsSolutionsChecks` is wired into `backend/lib/backend-stack.ts` — no installation or setup needed
 - Command: `cd backend && npx cdk synth 2>&1`
 - Look for: Lines with `[Error]` or `[Warning]` containing rule IDs (e.g., AwsSolutions-IAM4)
-- **If not installed**: Offer to install and integrate, or skip cdk-nag and use ASH only
+- Covers: IAM wildcards, S3 encryption/SSL/public access, DynamoDB encryption/PITR, Lambda runtime, API Gateway auth/logging, Cognito password policy
 
 **B. ASH (Comprehensive code, secrets, dependencies, IaC scanning)**
 - Installation check: `uvx --version`
