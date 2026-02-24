@@ -25,7 +25,7 @@ Documentation, threat modeling, legal hygiene, and deployment consistency for CI
 | 2 | API Credentials | Credential exposure in logs or code | Medium | High | Secrets Manager, env vars, no logging of values | ✅ Implemented |
 | 3 | Bedrock Prompts | Prompt injection via user input | Low | Medium | Input sanitization, output validation | ⚠️ Partial |
 | 4 | Lambda /tmp | Sensitive data persisted in temp storage | Low | Medium | Ephemeral storage, no cross-invocation state | ✅ Accepted |
-| 5 | CloudWatch Logs | PII exposure in log output | Low | Medium | Redact PII before logging, structured log format | ⚠️ Needs review |
+| 5 | CloudWatch Logs | PII exposure in log output | Low | Medium | Sanitize PII before logging, use structured format with redaction, set appropriate retention policies | ⚠️ Needs review |
 
 ## 9. Legal and Licensing Hygiene
 
