@@ -59,6 +59,8 @@ import os, boto3, json
 
 def get_credentials():
     secret_arn = os.environ.get('SECRET_ARN')
+    if not secret_arn:
+        raise RuntimeError("Environment variable SECRET_ARN must be set to a valid Secrets Manager ARN.")
     client = boto3.client('secretsmanager')
     response = client.get_secret_value(SecretId=secret_arn)
     return json.loads(response['SecretString'])
