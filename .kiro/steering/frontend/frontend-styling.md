@@ -1,6 +1,6 @@
 ---
 inclusion: fileMatch
-fileMatchPattern: "frontend/**/tailwind.config.*,frontend/**/postcss.config.*,frontend/**/*.css,frontend/**/components/**/*.tsx,frontend/**/components/**/*.ts,frontend/**/components/**/*.jsx"
+fileMatchPattern: "frontend/**/*"
 ---
 
 # Frontend Styling Standards
@@ -9,7 +9,8 @@ Tailwind CSS configuration, typography, and responsive design patterns for CIC f
 
 ## Styling
 
-**Tailwind CSS v4+ (Required)**
+**Tailwind CSS (Required)**
+- Use latest stable version
 
 ```typescript
 // tailwind.config.ts

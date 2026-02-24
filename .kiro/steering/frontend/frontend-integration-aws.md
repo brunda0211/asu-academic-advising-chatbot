@@ -1,6 +1,6 @@
 ---
 inclusion: fileMatch
-fileMatchPattern: "frontend/**/lib/**/*s3*,frontend/**/lib/**/*bedrock*,frontend/**/lib/**/*cognito*,frontend/**/lib/**/*aws*,frontend/**/lib/**/*upload*,frontend/**/lib/**/*storage*"
+fileMatchPattern: "frontend/**/*"
 ---
 
 # Backend Integration: AWS Services

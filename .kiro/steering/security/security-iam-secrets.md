@@ -1,6 +1,6 @@
 ---
 inclusion: fileMatch
-fileMatchPattern: "backend/lib/**/*.ts,backend/bin/**/*.ts,backend/lib/**/*stack*.ts,backend/lib/**/*iam*.ts,backend/lib/**/*policy*.ts,backend/lib/**/*role*.ts,backend/lambda/**/*secret*,backend/lambda/**/*credential*"
+fileMatchPattern: "backend/**/*"
 ---
 
 # Security: IAM & Secrets Management

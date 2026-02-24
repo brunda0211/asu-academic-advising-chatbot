@@ -1,6 +1,6 @@
 ---
 inclusion: fileMatch
-fileMatchPattern: "frontend/**/tsconfig.json,frontend/**/next.config.*,frontend/**/app/**/*,frontend/**/lib/**/config*,frontend/**/lib/**/utils*,frontend/**/.env*,frontend/**/lib/**/*.ts,frontend/**/lib/**/*.tsx"
+fileMatchPattern: "frontend/**/*"
 ---
 
 # Frontend Core Standards
@@ -9,8 +9,9 @@ Core Next.js configuration, project structure, and TypeScript setup for CIC fron
 
 ## Technology Stack
 
-**Next.js 15+ with App Router (Required)**
-- React 19+ with TypeScript strict mode
+**Next.js with App Router (Required)**
+- Use latest stable version of Next.js
+- React with TypeScript strict mode (latest stable)
 - Server-Side Rendering (SSR) and Static Site Generation (SSG)
 - Built-in image optimization and code splitting
 - File-based routing with App Router
@@ -130,7 +131,7 @@ export function useChat() {
 ### Session Management
 
 ```typescript
-// Generate unique session IDs (33+ chars for AWS AgentCore)
+// Generate unique session IDs (minimum 33 characters for AWS AgentCore)
 const sessionId = `session_${Date.now()}_${randomString()}`;
 sessionStorage.setItem('session_id', sessionId);
 ```

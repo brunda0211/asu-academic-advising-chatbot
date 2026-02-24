@@ -70,7 +70,7 @@ def lambda_handler(event, context):
         return {'statusCode': 500, 'body': json.dumps({'error': str(e)})}
 ```
 
-**CDK Definition**: Python 3.12+; detect host architecture dynamically; explicit timeout; pass resource names via environment (not ARNs).
+**CDK Definition**: Use latest supported Python runtime; detect host architecture dynamically; explicit timeout; pass resource names via environment (not ARNs).
 
 ```typescript
 const hostArch = os.arch();

@@ -1,6 +1,6 @@
 ---
 inclusion: fileMatch
-fileMatchPattern: "frontend/**/lib/**/*error*,frontend/**/lib/**/*retry*,frontend/**/lib/**/*fetch*,frontend/**/lib/**/*logger*,frontend/**/__tests__/**/*,frontend/**/*.test.*,frontend/**/*.spec.*,frontend/**/lib/**/*utils*"
+fileMatchPattern: "frontend/**/*"
 ---
 
 # Backend Integration: Error Handling & Performance
