@@ -24,7 +24,7 @@ Error handling, resilience, observability, and operational security best practic
 ```json
 {
   "Type": "Task",
-  "Resource": "arn:aws:lambda:...:check-accessibility",
+  "Resource": "arn:aws:states:::lambda:invoke",
   "Retry": [
     {
       "ErrorEquals": ["ServiceUnavailable", "TooManyRequestsException"],
