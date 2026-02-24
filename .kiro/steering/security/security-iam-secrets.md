@@ -7,14 +7,6 @@ fileMatchPattern: "backend/lib/**/*.ts,backend/bin/**/*.ts,backend/lib/**/*stack
 
 IAM least privilege and secrets management best practices for CIC projects.
 
-## Guiding Principles
-
-1. **PoC code becomes production code.** Treat every line as if it will ship.
-2. **Least privilege is not optional.** Wildcard permissions are never acceptable, even in prototypes.
-3. **Security is not a phase.** It is a property of every commit.
-4. **Document as you go.** Missing documentation is a security finding.
-5. **Automate enforcement.** Use tooling and IDE agents to catch violations before they reach a pull request.
-
 ## 1. IAM and Access Control
 
 | Practice | Detail |
@@ -54,18 +46,20 @@ iam.PolicyStatement(
 
 ### Example: Correct Pattern
 
-```python
-# Infrastructure (CDK)
-secret = secretsmanager.Secret.from_secret_name_v2(self, "AdobeApiSecret", "my-app/adobe-credentials")
-lambda_fn.add_environment("ADOBE_SECRET_ARN", secret.secret_arn)
-secret.grant_read(lambda_fn)
+```typescript
+// Infrastructure (CDK)
+const secret = secretsmanager.Secret.fromSecretNameV2(this, 'MySecret', 'my-app/credentials');
+myFunction.addEnvironment('SECRET_ARN', secret.secretArn);
+secret.grantRead(myFunction);
+```
 
-# Application code
+```python
+# Lambda application code
 import os, boto3, json
 
 def get_credentials():
-    secret_arn = os.environ["ADOBE_SECRET_ARN"]
-    client = boto3.client("secretsmanager")
+    secret_arn = os.environ.get('SECRET_ARN')
+    client = boto3.client('secretsmanager')
     response = client.get_secret_value(SecretId=secret_arn)
-    return json.loads(response["SecretString"])
+    return json.loads(response['SecretString'])
 ```

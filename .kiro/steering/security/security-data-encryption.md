@@ -23,19 +23,16 @@ S3 security, data encryption, and data classification best practices for CIC pro
 
 ### Example: Secure Bucket in CDK
 
-```python
-input_bucket = s3.Bucket(
-    self, "InputDocumentBucket",
-    bucket_name=f"{project_prefix}-input-{core.Aws.ACCOUNT_ID}",
-    block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
-    encryption=s3.BucketEncryption.S3_MANAGED,
-    enforce_ssl=True,
-    versioned=True,
-    removal_policy=core.RemovalPolicy.DESTROY,
-    auto_delete_objects=True,
-    server_access_logs_bucket=log_bucket,
-    server_access_logs_prefix="input-bucket-logs/",
-)
+```typescript
+const myBucket = new s3.Bucket(this, 'MyBucket', {
+  blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+  encryption: s3.BucketEncryption.S3_MANAGED,
+  enforceSSL: true,
+  versioned: true,
+  removalPolicy: cdk.RemovalPolicy.RETAIN,
+  serverAccessLogsBucket: logBucket,
+  serverAccessLogsPrefix: 'my-bucket-logs/',
+});
 ```
 
 ## 6. Data Security and Encryption
