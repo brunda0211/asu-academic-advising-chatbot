@@ -6,7 +6,7 @@ Standard Kiro configuration for ASU CIC projects, including MCP servers, Powers,
 
 ### Recommended mcp.json
 
-Place this configuration in `.kiro/settings/mcp.json` (workspace level) or `~/.kiro/settings/mcp.json` (user level).
+Place this configuration in `.kiro/settings/mcp.json` (workspace level) or `~/.kiro/settings/mcp.json` (user level). Note that for the 'aws-diagram' MCP server, it is recommended to use draw.io as well for best results.
 
 ```json
 {
