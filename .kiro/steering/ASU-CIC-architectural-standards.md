@@ -20,11 +20,11 @@ Flag conflicts with these standards and propose alternatives.
 
 ## Technology Stack
 
-- **Frontend**: Next.js 15+ with TypeScript, AWS Amplify, Tailwind CSS
-- **Backend**: AWS CDK (TypeScript), Lambda (Python 3.12+)
+- **Frontend**: Next.js (latest stable) with TypeScript, AWS Amplify, Tailwind CSS
+- **Backend**: AWS CDK (TypeScript), Lambda (Python, latest supported runtime)
 - **Architecture**: Serverless-first (Lambda, DynamoDB, S3, API Gateway)
 - **Infrastructure**: CDK L2/L3 constructs, no manual console configs
-- **Dependencies**: Use latest stable versions, verify docs, review breaking changes
+- **Dependencies**: Always install latest stable versions; check for updates before starting work; verify compatibility and review breaking changes in changelogs
 
 ## Project Structure
 

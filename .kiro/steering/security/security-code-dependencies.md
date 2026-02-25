@@ -1,6 +1,6 @@
 ---
 inclusion: fileMatch
-fileMatchPattern: "backend/lambda/**/*.py,backend/lambda/**/requirements.txt,backend/lambda/**/*bedrock*,backend/lambda/**/*ai*,backend/lambda/**/*agent*,backend/lambda/**/*strands*,backend/lambda/**/index.py,backend/package.json,frontend/package.json"
+fileMatchPattern: "backend/**/*"
 ---
 
 # Security: Code & Dependencies

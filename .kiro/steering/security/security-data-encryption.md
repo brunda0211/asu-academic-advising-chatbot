@@ -1,6 +1,6 @@
 ---
 inclusion: fileMatch
-fileMatchPattern: "backend/lib/**/*stack*.ts,backend/lib/**/*bucket*.ts,backend/lib/**/*s3*.ts,backend/lib/**/*dynamodb*.ts,backend/lib/**/*table*.ts,backend/lambda/**/*s3*,backend/lambda/**/*dynamodb*,backend/lambda/**/*storage*"
+fileMatchPattern: "backend/**/*"
 ---
 
 # Security: Data & Encryption

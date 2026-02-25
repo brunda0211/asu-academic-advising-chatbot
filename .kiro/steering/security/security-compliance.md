@@ -1,6 +1,5 @@
 ---
-inclusion: fileMatch
-fileMatchPattern: "docs/**/*,README.md,SECURITY.md,LICENSE,backend/lib/**/*stack*.ts,backend/bin/**/*.ts"
+inclusion: always
 ---
 
 # Security: Compliance & Documentation
