@@ -1,14 +1,12 @@
-# CIC Template Standard Configuration
+# Kiro Setup
 
-This document defines the standard Kiro configuration for CIC projects, including MCP servers, Powers, and recommended settings.
+Standard Kiro configuration for ASU CIC projects, including MCP servers, Powers, and recommended settings.
 
 ## Standard MCP Configuration
 
 ### Recommended mcp.json
 
 Place this configuration in `.kiro/settings/mcp.json` (workspace level) or `~/.kiro/settings/mcp.json` (user level).
-
-This streamlined configuration includes 4 essential MCP servers for version control, documentation, security, and web fetching. Complex AWS workflows (observability, IAM, infrastructure) are handled by Powers instead of direct MCP servers for better context management:
 
 ```json
 {
@@ -47,6 +45,72 @@ This streamlined configuration includes 4 essential MCP servers for version cont
   }
 }
 ```
+
+## Kiro Powers Configuration
+
+### Core Powers to Install
+
+Install these powers through the Kiro IDE Powers panel or from [kiro.dev/powers](https://kiro.dev/powers):
+
+1. **AWS Observability** (Critical)
+   - CloudWatch Logs, Metrics, Alarms, Application Signals, CloudTrail
+   - Replaces direct aws-observability MCP server with guided workflows
+   - Better context management through keyword activation
+   - Install from: kiro.dev/powers
+
+2. **IAM Policy Autopilot** (Critical)
+   - Automates IAM policy generation from code
+   - Enforces least privilege (CIC's #1 security requirement)
+   - Replaces direct iam-policy-autopilot MCP server
+   - Install from: kiro.dev/powers
+
+3. **Build AWS infrastructure with CDK and CloudFormation** (Recommended)
+   - CDK best practices, CloudFormation validation, security compliance
+   - Replaces direct aws-iac MCP server with guided workflows
+   - Complements backend-standards.md steering
+   - Install from: kiro.dev/powers
+
+### Optional Powers
+
+These powers may be useful for specific projects but are not required:
+
+- **Build a Power**: Build custom Kiro Powers for team-specific workflows (install when creating custom powers like CIC Deployment Power)
+- **AWS Cost Optimization**: For production cost analysis (not critical for prototypes)
+- **Design to Code with Figma**: Connect Figma designs to code components, generate design system rules, maintain design-code consistency (useful for UI-heavy projects)
+- **Build an Agent with Strands**: Build multi-agent systems using AWS Strands framework (for projects requiring complex agent orchestration)
+- **Build an Agent with Amazon Bedrock AgentCore**: Build agents using Amazon Bedrock AgentCore (for projects using Bedrock-native agent patterns)
+
+---
+
+## Installation Instructions
+
+### 1. Install MCP Servers
+
+**Option A: Workspace-level (For project-specific configuration)**
+```bash
+# Create .kiro/settings directory if it doesn't exist
+mkdir -p .kiro/settings
+
+# Copy the mcp.json configuration above to .kiro/settings/mcp.json
+```
+
+**Option B: User-level (For personal configuration)**
+```bash
+# Create ~/.kiro/settings directory if it doesn't exist
+mkdir -p ~/.kiro/settings
+
+# Copy the mcp.json configuration above to ~/.kiro/settings/mcp.json
+```
+
+### 2. Install Kiro Powers
+
+**Via Kiro IDE**:
+1. Open "Powers" tab in side bar (Kiro ghost w/lightning bolt)
+2. Search for and install:
+   - AWS Observability
+   - IAM Policy Autopilot
+   - Build AWS Infrastructure with CDK and CloudFormation
+3. Browse Powers list for project-specific Powers and add as necessary
 
 ### MCP Server Descriptions
 
@@ -146,71 +210,6 @@ This streamlined configuration includes 4 essential MCP servers for version cont
 
 ---
 
-## Kiro Powers Configuration
-
-### Recommended Powers to Install
-
-Install these powers through the Kiro IDE Powers panel or from [kiro.dev/powers](https://kiro.dev/powers):
-
-1. **AWS Observability** (Critical)
-   - CloudWatch Logs, Metrics, Alarms, Application Signals, CloudTrail
-   - Replaces direct aws-observability MCP server with guided workflows
-   - Better context management through keyword activation
-   - Install from: kiro.dev/powers
-
-2. **IAM Policy Autopilot** (Critical)
-   - Automates IAM policy generation from code
-   - Enforces least privilege (CIC's #1 security requirement)
-   - Replaces direct iam-policy-autopilot MCP server
-   - Install from: kiro.dev/powers
-
-3. **Build AWS infrastructure with CDK and CloudFormation** (Recommended)
-   - CDK best practices, CloudFormation validation, security compliance
-   - Replaces direct aws-iac MCP server with guided workflows
-   - Complements backend-standards.md steering
-   - Install from: kiro.dev/powers
-
-### Optional Powers
-
-These powers may be useful for specific projects but are not required:
-
-- **Build a Power**: Build custom Kiro Powers for team-specific workflows (install when creating custom powers like CIC Deployment Power)
-- **AWS Cost Optimization**: For production cost analysis (not critical for prototypes)
-- **Design to Code with Figma**: Connect Figma designs to code components, generate design system rules, maintain design-code consistency (useful for UI-heavy projects)
-- **Build an Agent with Strands**: Build multi-agent systems using AWS Strands framework (for projects requiring complex agent orchestration)
-- **Build an Agent with Amazon Bedrock AgentCore**: Build agents using Amazon Bedrock AgentCore (for projects using Bedrock-native agent patterns)
-
----
-
-## Installation Instructions
-
-### 1. Install MCP Servers
-
-**Option A: Workspace-level (Recommended for project templates)**
-```bash
-# Create .kiro/settings directory if it doesn't exist
-mkdir -p .kiro/settings
-
-# Copy the mcp.json configuration above to .kiro/settings/mcp.json
-```
-
-**Option B: User-level (For personal configuration)**
-```bash
-# Create ~/.kiro/settings directory if it doesn't exist
-mkdir -p ~/.kiro/settings
-
-# Copy the mcp.json configuration above to ~/.kiro/settings/mcp.json
-```
-
-### 2. Install Kiro Powers
-
-**Via Kiro IDE**:
-1. Open "Powers" tab in side bar (Kiro ghost w/lightning bolt)
-2. Search for and install:
-   - AWS Observability
-   - IAM Policy Autopilot
-   - Build AWS Infrastructure with CDK and CloudFormation
-
 ## Customization
 
 ### Adjusting AWS Region
@@ -264,9 +263,7 @@ To temporarily disable a server without removing it:
 
 1. **Start with workspace-level config**: Keeps project-specific configuration with the project
 2. **Use user-level for personal tools**: Personal preferences and credentials
-3. **Document custom servers**: Add descriptions to help team members understand purpose
-4. **Version control mcp.json**: Include in git (but never commit credentials)
-5. **Use environment variables**: For sensitive values, reference env vars
+3. **Use environment variables**: For sensitive values, reference env vars
 
 ### Power Usage
 
@@ -305,22 +302,7 @@ To contribute improvements to this configuration:
 
 1. Test changes thoroughly
 2. Document rationale for changes
-3. Update this CONFIG.md file
+3. Update this README
 4. Submit pull request with clear description
 
 ---
-
-## Version History
-
-### v1.0.0 (Initial Release)
-- Initial standard configuration
-- Eight MCP servers:
-  - aws-observability (CloudWatch, Application Signals, CloudTrail)
-  - iam-policy-autopilot (IAM policy generation)
-  - aws-iac (CDK best practices, CloudFormation validation)
-  - git (version control operations)
-  - context7 (library documentation)
-  - ash-security (comprehensive security scanning)
-  - power-builder (custom power development)
-- Subagent power assignments
-- Migration guide from custom CIC Observability Power
