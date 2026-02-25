@@ -46,6 +46,7 @@ All work produced is open source. More information can be found in the GitHub re
 | [API Documentation](#api-documentation)             | Documentation on the APIs the project uses               |
 | [Directories](#directories)                         | General project directory structure                      |
 | [Modification Guide](#modification-guide)           | Guide for developers extending the project               |
+| [Removing Commit History](#removing-commit-history) | Steps to clean commit history when using as a template   |
 | [Credits](#credits)                                 | Contributors and acknowledgments                         |
 | [License](#license)                                 | License information                                      |
 
@@ -147,6 +148,23 @@ For developers looking to extend or modify this project, see the [Modification G
 
 3. **docs/** - Project documentation
    - `media/` - Images, diagrams, and GIFs for documentation
+
+---
+
+## Removing Commit History
+
+When using this as a template for a new repo, you can strip the entire commit history to start fresh with a single initial commit:
+
+```bash
+git checkout --orphan fresh-start
+git add -A
+git commit -m "Initial commit"
+git branch -D main
+git branch -m main
+git push origin main --force
+```
+
+> **Warning:** `--force` rewrites the remote branch history. Only do this on a repo you own and before collaborators have cloned it.
 
 ---
 
