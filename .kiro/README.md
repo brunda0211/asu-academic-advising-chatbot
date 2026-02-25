@@ -41,7 +41,20 @@ Place this configuration in `.kiro/settings/mcp.json` (workspace level) or `~/.k
       "disabled": false,
       "autoApprove": [],
       "description": "Fetch web content and convert to markdown for documentation access"
-    }
+    },
+    "aws-diagram": {
+      "command": "/Users/etloaner/.local/bin/uvx",
+      "args": [
+        "awslabs.aws-diagram-mcp-server@latest"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false,
+      "autoApprove": [
+        "generate_diagram"
+      ]
+    },
   }
 }
 ```
