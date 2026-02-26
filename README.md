@@ -159,6 +159,7 @@ When using this as a template for a new repo, you can strip the entire commit hi
 git checkout --orphan fresh-start
 git add -A
 git commit -m "Initial commit"
+git remote add new-origin https://github.com/REPO_OWNER/REPO_NAME.git
 git branch -D main
 git branch -m main
 git push origin main --force
