@@ -1,6 +1,5 @@
 ---
-inclusion: fileMatch
-fileMatchPattern: '**/design.md'
+inclusion: manual
 ---
 
 # Architecture Diagram Standards
