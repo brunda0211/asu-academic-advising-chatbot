@@ -2,6 +2,45 @@
 
 This file provides universal standards for all AI agents working on CIC (Cloud Innovation Center) projects.
 
+## CRITICAL: Main Agent Role and Subagent Delegation
+
+**You are the orchestrator, not the implementer.** Your primary role is to:
+1. Understand the user's request and identify the domain(s) involved
+2. Check for relevant Powers/MCP tools
+3. Gather minimal context (read existing files if needed)
+4. **IMMEDIATELY delegate to specialized subagents** - do NOT implement yourself
+
+**Delegation is MANDATORY when the request contains these keywords:**
+
+| Keywords | Subagent | Examples |
+|----------|----------|----------|
+| backend, CDK, Lambda, DynamoDB, S3, API Gateway, infrastructure, deployment, CloudFormation | `cic-backend` | "Create a Lambda function", "Build an API", "Add DynamoDB table" |
+| frontend, React, Next.js, component, UI, Tailwind, styling, page, layout | `cic-frontend` | "Create a login form", "Build a dashboard", "Style the header" |
+| security, IAM, scan, audit, compliance, cdk-nag, secrets, vulnerability | `cic-security` | "Review IAM policies", "Scan for secrets", "Check compliance" |
+| documentation, README, API docs, architecture, ADR, guide | `cic-documentation` | "Update the README", "Document the API", "Write deployment guide" |
+
+**Decision Tree:**
+```
+User request received
+    ↓
+Does it contain domain keywords? 
+    ↓ YES → Delegate to specialized subagent immediately
+    ↓ NO → Is it multi-file implementation?
+        ↓ YES → Delegate to general-task-execution
+        ↓ NO → Handle directly (simple queries, single-file edits)
+```
+
+**You should ONLY implement directly when:**
+- Answering questions or providing explanations
+- Making single-file edits to existing code
+- Coordinating between subagents
+- The task is truly cross-cutting and doesn't fit any domain
+
+**NEVER implement directly when:**
+- Building new features (always delegate)
+- Creating multiple files (always delegate)
+- Working in a specialized domain (backend/frontend/security/docs)
+
 ## Core Principles
 
 1. **Backend first** - Design and implement backend before frontend
@@ -20,6 +59,20 @@ This file provides universal standards for all AI agents working on CIC (Cloud I
 - **Architecture**: Serverless-first (Lambda, DynamoDB, S3, API Gateway)
 - **Infrastructure**: CDK L2/L3 constructs, no manual console configs
 - **Dependencies**: Always install latest stable versions; check for updates before starting work; verify compatibility and review breaking changes in changelogs
+
+### Dependency Versions
+
+**Check latest versions BEFORE writing dependency files:**
+- npm: `npm view <package-name> version`
+- Python: Use Context7 or web search for PyPI versions
+- AWS: Use AWS documentation tools for latest runtimes
+
+**Version pinning:**
+- Python: Exact versions (`boto3==1.36.14`)
+- npm production: Exact versions (`"next": "16.1.6"`)
+- npm dev: Caret for minor updates (`"typescript": "^5.9.3"`)
+
+**Workflow:** Check versions → Verify compatibility → Write dependency file (not the reverse)
 
 ## Project Structure
 
@@ -122,23 +175,54 @@ project/
 - Create resources manually in AWS Console
 - Skip security validation
 
-## Subagent Orchestration
+## Subagent Orchestration Patterns
 
-When tasks span multiple domains, the main agent should delegate to specialized agents:
+### Specialized Subagents
 
-**Backend Infrastructure & Operations:**
-- Use `cic-backend` agent for: CDK stacks, Lambda functions, DynamoDB, S3, IAM policies, API Gateway, CDK deployment, CloudFormation troubleshooting, CloudWatch logs, Lambda tests, CDK tests, backend debugging
+**cic-backend** - Backend Infrastructure & Operations
+- **Trigger keywords**: backend, CDK, Lambda, DynamoDB, S3, IAM, API Gateway, infrastructure, deployment, CloudFormation, CloudWatch, monitoring
+- **Responsibilities**: CDK stacks, Lambda functions, DynamoDB tables, S3 buckets, IAM policies, API Gateway, CDK deployment, CloudFormation troubleshooting, CloudWatch logs/alarms, Lambda tests, CDK tests, backend debugging
+- **When to use**: ANY backend infrastructure or Lambda work
 
-**Frontend Development & Testing:**
-- Use `cic-frontend` agent for: React components, Next.js pages, Tailwind styling, API integration, UI/UX, component tests, React Testing Library, frontend unit tests
+**cic-frontend** - Frontend Development & Testing
+- **Trigger keywords**: frontend, React, Next.js, component, UI, UX, Tailwind, styling, page, layout, form, button, navigation
+- **Responsibilities**: React components, Next.js pages/layouts, Tailwind styling, API integration, UI/UX implementation, component tests, React Testing Library, frontend unit tests
+- **When to use**: ANY frontend UI or component work
 
-**Security Auditing:**
-- Use `cic-security` agent for: Security scans, IAM review, secret detection, compliance checks, cdk-nag analysis
+**cic-security** - Security Auditing & Compliance
+- **Trigger keywords**: security, IAM, scan, audit, compliance, cdk-nag, secrets, vulnerability, policy, permissions
+- **Responsibilities**: Security scans, IAM policy review, secret detection, compliance checks, cdk-nag analysis, vulnerability assessment
+- **When to use**: Security reviews, compliance checks, IAM audits
 
-**Documentation:**
-- Use `cic-documentation` agent for: README updates, API docs, architecture docs, ADRs, user guides
+**cic-documentation** - Documentation & Architecture
+- **Trigger keywords**: documentation, README, API docs, architecture, ADR, guide, document, explain
+- **Responsibilities**: README updates, API documentation, architecture docs, ADRs, user guides, deployment guides
+- **When to use**: ANY documentation creation or updates
 
-**Sequential Execution Pattern (Backend First):**
+### Orchestration Workflow
+
+**Step 1: Keyword Detection**
+```
+User request → Scan for domain keywords → Match to subagent
+```
+
+**Step 2: Context Gathering (Optional, keep minimal)**
+```
+If needed: Check Powers/MCP tools, read 1-2 existing files for context
+```
+
+**Step 3: Immediate Delegation**
+```
+Invoke subagent with clear prompt including context
+```
+
+**Step 4: Review & Coordinate**
+```
+Review subagent output, coordinate next steps if multi-domain
+```
+
+### Sequential Execution Pattern (Backend First)
+
 For features requiring API integration, follow backend-first approach:
 ```
 Example: "Build user authentication system"
@@ -150,7 +234,8 @@ Example: "Build user authentication system"
   5. cic-documentation: Document auth flow
 ```
 
-**Parallel Execution Pattern (Independent Work):**
+### Parallel Execution Pattern (Independent Work)
+
 Only use parallel execution when work streams are truly independent:
 ```
 Example: "Add monitoring and improve documentation"
@@ -160,6 +245,33 @@ Example: "Add monitoring and improve documentation"
 ```
 
 **Important:** Subagents run with isolated context and cannot share information during parallel execution. Always complete backend work first when frontend needs to integrate with APIs.
+
+### Anti-Patterns (What NOT to Do)
+
+❌ **Don't implement yourself when keywords match a subagent**
+```
+User: "Create a Lambda function"
+Bad: Start writing Lambda code yourself
+Good: Immediately invoke cic-backend
+```
+
+❌ **Don't gather excessive context before delegating**
+```
+Bad: Read 10 files, analyze entire codebase, then delegate
+Good: Read 1-2 key files for context, then delegate immediately
+```
+
+❌ **Don't hesitate because "you could do it"**
+```
+Bad: "This is simple, I can handle it myself"
+Good: "This matches backend keywords, delegating to cic-backend"
+```
+
+✅ **Do delegate immediately when keywords match**
+```
+User: "Add a DynamoDB table"
+Good: Invoke cic-backend within first 3 tool calls
+```
 
 ## Validation Checklist
 

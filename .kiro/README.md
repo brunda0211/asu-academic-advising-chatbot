@@ -13,7 +13,7 @@ Place this configuration in `.kiro/settings/mcp.json` (workspace level) or `~/.k
   "mcpServers": {
     "git": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-git"],
+      "args": ["-y", "@modelcontextprotocol/server-github"],
       "env": {},
       "disabled": false,
       "autoApprove": [],
@@ -27,34 +27,33 @@ Place this configuration in `.kiro/settings/mcp.json` (workspace level) or `~/.k
       "description": "Up-to-date, version-specific documentation for any library or framework"
     },
     "ash-security": {
-      "command": "npx",
-      "args": ["-y", "@awslabs/ash-mcp-server"],
-      "env": {},
+      "command": "uvx",
+      "args": [
+        "--from=git+https://github.com/awslabs/automated-security-helper@v3.0.0",
+        "ash",
+        "mcp"
+      ],
       "disabled": false,
       "autoApprove": [],
       "description": "Automated Security Helper: SAST, IaC scanning, secrets detection, SCA"
     },
     "fetch": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-fetch"],
+      "command": "uvx",
+      "args": ["mcp-server-fetch"],
       "env": {},
       "disabled": false,
       "autoApprove": [],
       "description": "Fetch web content and convert to markdown for documentation access"
     },
     "aws-diagram": {
-      "command": "/Users/etloaner/.local/bin/uvx",
-      "args": [
-        "awslabs.aws-diagram-mcp-server@latest"
-      ],
+      "command": "uvx",
+      "args": ["awslabs.aws-diagram-mcp-server@latest"],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
       "disabled": false,
-      "autoApprove": [
-        "generate_diagram"
-      ]
-    },
+      "autoApprove": ["generate_diagram"]
+    }
   }
 }
 ```
