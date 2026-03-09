@@ -256,3 +256,8 @@ const lambdaArch = hostArch === "arm64" ? lambda.Architecture.ARM_64 : lambda.Ar
 **Document decisions about**: Service selection (OpenSearch vs S3+DynamoDB), model choices (Bedrock model selection), architecture patterns (event-driven vs request-response), data storage (DynamoDB vs RDS), scaling strategies (serverless vs provisioned).
 
 
+## Architecture Diagrams
+
+For creating and maintaining architecture diagrams in spec design.md files, follow the standards in #[[file:.kiro/steering/architecture-diagrams.md]]. Use draw.io XML format (not Mermaid), AWS 2024 icons, and generate PNG versions using the AWS Diagram MCP server.
+
+
