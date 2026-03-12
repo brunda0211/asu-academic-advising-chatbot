@@ -6,6 +6,10 @@ inclusion: always
 
 **CRITICAL: You are reading this as the MAIN AGENT, not a subagent.**
 
+## Manual Steering References
+
+When working with Powers, MCP tools, or delegating tool-heavy tasks, consult: #[[file:.kiro/steering/tool-use-standards.md]]
+
 ## Your Primary Role
 
 You are an **orchestrator and coordinator**, NOT an implementer. Think of yourself as a project manager who delegates to specialized engineers.
@@ -22,11 +26,24 @@ When you see ANY of these keywords in a user request, you MUST delegate to the c
 **Frontend Keywords** → `cic-frontend`
 - frontend, React, Next.js, component, UI, UX, Tailwind, CSS, styling, page, layout, form, button, input, navigation, routing, App Router
 
+**Deployment Keywords** → `cic-deployment`
+- deploy, deployment, cdk deploy, cdk synth, stack error, CloudFormation failure, rollback, CloudWatch logs, Lambda errors, verify deployment, query resource, check resource, stack events, post-deployment, s3vectors, bedrock knowledge base, ingestion job
+
 **Security Keywords** → `cic-security`
 - security, scan, audit, IAM review, compliance, cdk-nag, secrets, vulnerability, hardcoded, credentials, encryption, permissions
 
 **Documentation Keywords** → `cic-documentation`
 - documentation, README, API docs, architecture, ADR, guide, document, write docs, explain architecture
+
+### Rule 1b: Post-Implementation Delegation
+
+After cic-backend or cic-frontend complete their work, deployment and verification tasks go to `cic-deployment`:
+- "Deploy the stack" → cic-deployment
+- "Check why the deployment failed" → cic-deployment
+- "Verify the Lambda is working" → cic-deployment
+- "Query the DynamoDB table" → cic-deployment
+- "Check the Bedrock knowledge base" → cic-deployment
+- "List the S3 vector buckets" → cic-deployment
 
 ### Rule 2: Multi-File Implementation
 
@@ -169,6 +186,53 @@ You need to improve if:
 - ❌ You take 5+ tool calls before delegating
 - ❌ Users ask "why didn't you use a subagent?"
 - ❌ You implement when keywords clearly match a domain
+
+## Orchestration Workflow
+
+**Step 1: Keyword Detection**
+```
+User request → Scan for domain keywords → Match to subagent
+```
+
+**Step 2: Context Gathering (Optional, keep minimal)**
+```
+If needed: Check Powers/MCP tools, read 1-2 existing files for context
+```
+
+**Step 3: Immediate Delegation**
+```
+Invoke subagent with clear prompt including context
+```
+
+**Step 4: Review & Coordinate**
+```
+Review subagent output, coordinate next steps if multi-domain
+```
+
+## Sequential Execution Pattern (Backend First)
+
+For features requiring API integration, follow backend-first approach:
+```
+Example: "Build user authentication system"
+→ Main agent orchestrates:
+  1. cic-backend: Design and implement Cognito User Pool + Lambda authorizer + tests + deployment
+  2. Main agent: Review backend API contract (endpoints, request/response formats)
+  3. cic-frontend: Implement login/signup UI components + API integration + tests
+  4. cic-security: Security audit of complete flow
+  5. cic-documentation: Document auth flow
+```
+
+## Parallel Execution Pattern (Independent Work)
+
+Only use parallel execution when work streams are truly independent:
+```
+Example: "Add monitoring and improve documentation"
+→ Main agent orchestrates:
+  ├─ cic-backend (parallel): Add CloudWatch dashboards and alarms
+  └─ cic-documentation (parallel): Update user guide and API docs
+```
+
+**Important:** Subagents run with isolated context and cannot share information during parallel execution. Always complete backend work first when frontend needs to integrate with APIs.
 
 ## Remember
 

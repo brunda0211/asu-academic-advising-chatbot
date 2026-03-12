@@ -11,16 +11,83 @@ fileMatchPattern: "backend/**/*"
 ## Project Structure
 
 ```
-backend/
-├── lib/<project>-stack.ts  # CDK stack (TypeScript)
-├── lambda/<function>/      # Lambda handlers (Python)
-│   ├── index.py            # Entry point
-│   └── requirements.txt
-├── bin/                    # CDK app entry
-├── cdk.json, package.json, tsconfig.json
+project/
+├── frontend/
+│   ├── app/              # Next.js App Router (pages and layouts)
+│   ├── components/       # UI components
+│   ├── hooks/           # Custom React hooks
+│   ├── lib/             # API clients, utilities
+│   └── contexts/        # React Context providers
+├── backend/
+│   ├── lib/             # CDK stack definitions (TypeScript)
+│   ├── lambda/          # Lambda handlers (Python)
+│   └── bin/             # CDK app entry point
+└── docs/
+    ├── README.md                    # Project overview, setup, quick start
+    ├── architectureDeepDive.md      # Architecture, services, data flow, ADRs
+    ├── deploymentGuide.md           # Complete deployment instructions
+    ├── userGuide.md                 # End-user instructions
+    ├── APIDoc.md                    # API reference
+    ├── modificationGuide.md         # Developer guide for extending
+    └── ADR_TEMPLATE.md              # Template for architectural decisions
 ```
 
 **Naming**: Lambda dirs (kebab-case: `resume-parser`), Python files (snake_case), CDK constructs (PascalCase: `UserTable`), Handler (always `lambda_handler(event, context)`).
+
+## Dependency Versions
+
+**Check latest versions BEFORE writing dependency files:**
+- npm: `npm view <package-name> version`
+- Python: Use Context7 or web search for PyPI versions
+- AWS: Use AWS documentation tools for latest runtimes
+
+**Version pinning:**
+- Python: Exact versions (`boto3==1.36.14`)
+- npm production: Exact versions (`"next": "16.1.6"`)
+- npm dev: Caret for minor updates (`"typescript": "^5.9.3"`)
+
+**Workflow:** Check versions → Verify compatibility → Write dependency file (not the reverse)
+
+## Build & Test Commands
+
+**Backend:**
+- Build: `cd backend && npm run build`
+- Synth (runs cdk-nag): `cd backend && cdk synth`
+- Deploy: `cd backend && cdk deploy`
+- Test: `cd backend && npm test`
+
+**Frontend:**
+- Dev: `cd frontend && npm run dev`
+- Build: `cd frontend && npm run build`
+- Test: `cd frontend && npm test`
+- Lint: `cd frontend && npm run lint`
+
+## Security Requirements (Non-Negotiable)
+
+**IAM Policies:**
+- Never use wildcard actions (`service:*`)
+- Never use wildcard resources (`*`)
+- Use CDK grant methods: `table.grantReadWriteData(fn)`, `bucket.grantRead(fn)`
+- One IAM role per Lambda function
+
+**Secrets:**
+- Store in Secrets Manager or SSM Parameter Store
+- Reference via environment variables
+- Never hardcode secret values or paths
+
+**Encryption:**
+- Enable encryption at rest (DynamoDB, S3, EFS)
+- Enforce HTTPS/TLS for all endpoints
+- Use `enforceSSL: true` on all S3 buckets
+
+**PII:**
+- Redact PII from CloudWatch logs
+- Use placeholders in test data: `[email]`, `[phone_number]`
+- Store PII in encrypted tables; validate and sanitize input
+
+**Authentication:**
+- Use Cognito for user authentication
+- Validate JWT tokens; implement session management; use MFA for admins
 
 ## CDK Context Variables
 
@@ -230,6 +297,15 @@ Use CDK grant methods first (`table.grantReadWriteData(fn)`, `bucket.grantRead(f
 ## RAG Chatbots with S3 Vectors
 
 For projects that use Bedrock Knowledge Base + S3 Vectors for RAG, follow the patterns in #[[file:.kiro/steering/backend/s3-vectors-rag-chatbot.md]]. Covers S3 Vectors bucket/index setup (TypeScript + Python CDK), Bedrock KB wiring, Lambda retrieval, ingestion patterns, and cdk-nag suppressions.
+
+## Security Steering References
+
+For detailed security guidance beyond the summary above, consult these manual-inclusion files:
+- IAM & secrets management: #[[file:.kiro/steering/security/security-iam-secrets.md]]
+- Data & encryption: #[[file:.kiro/steering/security/security-data-encryption.md]]
+- Operations & resilience: #[[file:.kiro/steering/security/security-operations.md]]
+- Code & dependencies: #[[file:.kiro/steering/security/security-code-dependencies.md]]
+- Compliance & documentation: #[[file:.kiro/steering/security/security-compliance.md]]
 
 ## Security Scanning with cdk-nag
 
