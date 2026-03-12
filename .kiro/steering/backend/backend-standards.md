@@ -7,31 +7,6 @@ fileMatchPattern: "backend/**/*"
 
 **Languages**: Lambdas (Python), CDK stack (TypeScript). 
 **Architecture**: Single stack unless complexity requires otherwise; serverless-first, cost-effective, resilient. Always use latest AWS resources/services; verify with MCP/web search before suggesting changes. Optimize for fewer resources while maintaining clarity. Never change strategy without approval. 
-
-## Project Structure
-
-```
-project/
-├── frontend/
-│   ├── app/              # Next.js App Router (pages and layouts)
-│   ├── components/       # UI components
-│   ├── hooks/           # Custom React hooks
-│   ├── lib/             # API clients, utilities
-│   └── contexts/        # React Context providers
-├── backend/
-│   ├── lib/             # CDK stack definitions (TypeScript)
-│   ├── lambda/          # Lambda handlers (Python)
-│   └── bin/             # CDK app entry point
-└── docs/
-    ├── README.md                    # Project overview, setup, quick start
-    ├── architectureDeepDive.md      # Architecture, services, data flow, ADRs
-    ├── deploymentGuide.md           # Complete deployment instructions
-    ├── userGuide.md                 # End-user instructions
-    ├── APIDoc.md                    # API reference
-    ├── modificationGuide.md         # Developer guide for extending
-    └── ADR_TEMPLATE.md              # Template for architectural decisions
-```
-
 **Naming**: Lambda dirs (kebab-case: `resume-parser`), Python files (snake_case), CDK constructs (PascalCase: `UserTable`), Handler (always `lambda_handler(event, context)`).
 
 ## Dependency Versions
@@ -50,17 +25,11 @@ project/
 
 ## Build & Test Commands
 
-**Backend:**
 - Build: `cd backend && npm run build`
 - Synth (runs cdk-nag): `cd backend && cdk synth`
 - Deploy: `cd backend && cdk deploy`
 - Test: `cd backend && npm test`
 
-**Frontend:**
-- Dev: `cd frontend && npm run dev`
-- Build: `cd frontend && npm run build`
-- Test: `cd frontend && npm test`
-- Lint: `cd frontend && npm run lint`
 
 ## Security Requirements (Non-Negotiable)
 

@@ -1,5 +1,5 @@
 ---
-inclusion: manual
+inclusion: always
 ---
 
 # External Tool Usage Standards (Powers & MCP)

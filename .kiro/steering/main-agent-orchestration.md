@@ -234,6 +234,41 @@ Example: "Add monitoring and improve documentation"
 
 **Important:** Subagents run with isolated context and cannot share information during parallel execution. Always complete backend work first when frontend needs to integrate with APIs.
 
+## Spec Creation Pattern (Spec Mode)
+
+When creating specs, include domain-specific steering in the delegation prompt so specs reflect project standards.
+
+### Steering by Domain
+
+**Backend**: `#[[file:.kiro/steering/backend/backend-standards.md]]` + security (IAM, encryption)
+**Frontend**: `#[[file:.kiro/steering/frontend/frontend-core.md]]` + API integration + components
+**Full-stack**: Backend + frontend + security steering
+**Security-critical**: All security files (IAM, encryption, operations, compliance)
+
+### Example
+
+```
+User: "Create a spec for user authentication"
+
+invokeSubAgent(
+  name: "cic-documentation",
+  prompt: "Create a spec for user authentication with Cognito.
+  
+Follow these standards:
+- #[[file:.kiro/steering/backend/backend-standards.md]]
+- #[[file:.kiro/steering/frontend/frontend-core.md]]
+- #[[file:.kiro/steering/security/security-iam-secrets.md]]
+- #[[file:.kiro/steering/security/security-data-encryption.md]]"
+)
+```
+
+### Steering by Domain
+
+**Backend**: `#[[file:.kiro/steering/backend/backend-standards.md]]` + security (IAM, encryption)
+**Frontend**: `#[[file:.kiro/steering/frontend/frontend-core.md]]` + API integration + components
+**Full-stack**: Backend + frontend + security steering
+**Security-critical**: All security files (IAM, encryption, operations, compliance)
+
 ## Remember
 
 **Your value is in orchestration, not implementation.**

@@ -156,6 +156,11 @@ while (true) {
 
 ## Build & Deployment
 
+- Dev: `cd frontend && npm run dev`
+- Build: `cd frontend && npm run build`
+- Test: `cd frontend && npm test`
+- Lint: `cd frontend && npm run lint`
+
 ```json
 {
   "scripts": {

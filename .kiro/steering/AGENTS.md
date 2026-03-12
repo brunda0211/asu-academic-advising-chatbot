@@ -2,8 +2,8 @@
 
 This file provides universal standards for all AI agents working on CIC (Cloud Innovation Center) projects.
 
-> **Orchestration & delegation rules** → `.kiro/steering/main-agent-orchestration.md`
-> **Backend-specific standards** → `.kiro/steering/backend/backend-standards.md`
+> **Orchestration & delegation rules** → #[[file:.kiro/steering/main-agent-orchestration.md]]
+> **Backend-specific standards** → #[[file:.kiro/steering/backend/backend-standards.md]]
 > **Security requirements** → `.kiro/steering/security/`
 > This file covers cross-cutting project standards, conventions, and boundaries only.
 
