@@ -31,6 +31,26 @@ If you plan to use AWS-related Powers (CloudWatch, CloudTrail, IAM Policy Autopi
 }
 ```
 
+## Recommended MCP Setup
+
+A complete MCP configuration should include:
+
+**Core MCP Servers:**
+1. **aws-documentation** - Access AWS documentation and guides
+2. **aws-knowledge-mcp-server** - Latest AWS updates and new features
+3. **fetch** - Fetch web content and convert to markdown
+4. **github** - Git operations and repository management
+5. **figma** - Design system integration and UI component access
+6. **context7** - Up-to-date library and framework documentation
+
+**AWS Powers:**
+1. **aws-infrastructure-as-code** - CDK best practices and IaC validation
+2. **aws-observability** - CloudWatch logs, metrics, and Application Signals
+3. **aws-agentcore** - Build and test Bedrock AgentCore agents
+4. **strands** - Build AI agents with Strands SDK
+
+---
+
 ### MCP Server Descriptions
 
 #### git

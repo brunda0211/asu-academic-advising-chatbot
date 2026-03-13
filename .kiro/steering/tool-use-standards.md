@@ -47,6 +47,7 @@ Common tool categories:
 **Design/Frontend:** Before implementing UI, creating components, or working with design systems
 **APIs/Integration:** When integrating third-party services, learning frameworks, or working with APIs
 **Version Control:** Before performing git operations, reviewing commits, managing branches, or working with repositories
+**AWS Latest Updates:** Use `aws-knowledge-mcp-server` (if available in mcp.json) to discover the latest AWS service updates, new features, and API changes before implementing AWS services (e.g., REST API V1 streaming support added Nov 19, 2025)
 
 ## Proactive vs Reactive
 
@@ -82,6 +83,14 @@ User: "Create a Lambda function"
 
 ❌ Wrong: Start writing CDK code immediately
 ✅ Right: kiroPowers list → Use aws-infrastructure-as-code → Query best practices → Write code
+```
+
+### AWS Latest Updates
+```
+User: "Implement API Gateway streaming"
+
+❌ Wrong: Use outdated patterns from general knowledge
+✅ Right: Query aws-knowledge-mcp-server → Discover Nov 19, 2025 REST API V1 streaming support → Implement with latest patterns
 ```
 
 ### Security Review

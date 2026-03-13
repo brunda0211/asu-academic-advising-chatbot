@@ -327,6 +327,10 @@ Use CDK grant methods first (`table.grantReadWriteData(fn)`, `bucket.grantRead(f
 
 For projects that use Bedrock Knowledge Base + S3 Vectors for RAG, follow the patterns in #[[file:.kiro/steering/backend/s3-vectors-rag-chatbot.md]]. Covers S3 Vectors bucket/index setup (TypeScript + Python CDK), Bedrock KB wiring, Lambda retrieval, ingestion patterns, and cdk-nag suppressions.
 
+## API Gateway
+
+For projects that use API Gateway (REST API V1 or HTTP API V2), follow the patterns in #[[file:.kiro/steering/backend/api-gateway-patterns.md]]. Covers when to use each type, streaming support, authentication, CORS, Lambda integration, and monitoring.
+
 ## Security Steering References
 
 For detailed security guidance beyond the summary above, consult these manual-inclusion files:
