@@ -249,6 +249,25 @@ When creating project specs, delegate to `cic-project-specs` using a **3-phase p
 3. **Feature name**: Extract or create kebab-case (e.g., "simple-chatbot")
 4. **Execute 3 phases**: Invoke `cic-project-specs` with presets: "requirements" → "design" → "tasks"
 
+## Spec Task Execution & Parallelization
+
+When executing tasks from tasks.md:
+
+**Parallel Execution Rules:**
+- ✅ Different domains (backend + frontend, frontend + backend deployment)
+- ✅ Different files/modules (Lambda A + Lambda B)
+- ✅ Multiple instances of same agent (2x cic-backend for independent Lambdas)
+- ❌ Shared files or dependencies (A needs B's output)
+- ❌ Infrastructure + code using it (deploy infra first)
+
+**Quick Check:** Can both tasks complete without knowing the other's result? → Parallelize
+
+**Example:**
+Good: cic-backend (ChatLambda) + cic-backend (MatchLambda) + cic-frontend (setup) Bad: cic-backend (shared utils) + cic-backend (Lambda using those utils)
+
+
+**Default:** Execute sequentially. Parallelize only when clearly independent.
+
 ### Phase Examples
 
 **Phase 1: Requirements (preset="requirements")**
