@@ -150,6 +150,66 @@ const myBucket = new s3.Bucket(this, "MyBucket", {
 myBucket.grantRead(myFunction);
 ```
 
+## CodeBuild Integration for Amplify
+
+When Amplify apps need to reference backend resources created by CDK, use CodeBuild to orchestrate the deployment sequence. This pattern is essential when:
+- Frontend needs backend API URLs, Cognito pool IDs, or other stack outputs
+- Deployment requires specific context variables (GitHub tokens, credentials)
+- You want automated CI/CD without manual CDK commands
+
+### Integration Pattern
+
+Create Amplify app early in CDK stack to get `appId` for CORS configuration, but construct the full Amplify URL for use in API Gateway, Lambda Function URLs, and other backend resources:
+
+```typescript
+// Create Amplify app early for CORS configuration
+const amplifyApp = new amplify.CfnApp(this, "AmplifyFrontendUI", {
+  name: `${projectPrefix}-frontend`,
+  repository: `https://github.com/${githubOwner}/${githubRepo}`,
+  oauthToken: githubTokenSecret.secretValue.unsafeUnwrap(),
+  platform: 'WEB_COMPUTE',
+  buildSpec: /* ... */,
+  // NO customRules for SSR apps
+});
+
+const mainBranch = new amplify.CfnBranch(this, "AmplifyMainBranch", {
+  appId: amplifyApp.attrAppId,
+  branchName: "main",
+  enableAutoBuild: true,
+  stage: "PRODUCTION",
+});
+
+// Construct Amplify app URL for CORS
+const amplifyAppUrl = `https://main.${amplifyApp.attrAppId}.amplifyapp.com`;
+console.log(`Frontend URL for CORS: ${amplifyAppUrl}`);
+
+// Use amplifyAppUrl in API Gateway CORS, Lambda Function URL CORS, etc.
+```
+
+### CodeBuild Deployment Script
+
+The deployment orchestration happens via a shell script that:
+1. Prompts for required credentials/configuration
+2. Creates IAM service role for CodeBuild
+3. Creates CodeBuild project with environment variables
+4. Starts the build with deploy or destroy action
+
+See cic-deployment agent for deployment script structure. The script should:
+- Create CodeBuild project with GitHub source
+- Pass all CDK context variables as CodeBuild environment variables
+- Use `buildspec.yml` for actual CDK commands
+- Support both deploy and destroy operations
+
+### BuildSpec Configuration
+
+Create `buildspec.yml` in repository root for CodeBuild execution. See cic-deployment agent for buildspec structure. Key requirements:
+- Install AWS CDK CLI globally
+- Navigate to backend directory
+- Pass context variables to all CDK commands (bootstrap, deploy, destroy)
+- Use conditional logic for deploy vs destroy
+
+This pattern ensures backend resources are created first, their outputs are available for Amplify environment variables, and the entire deployment is automated through CodeBuild.
+
 ## Amplify
 
 **Platform**: Use `WEB_COMPUTE` for Next.js SSR apps. Amplify's compute layer handles all routing automatically.
