@@ -132,17 +132,20 @@ Domain-specific guidance loads automatically based on inclusion mode:
 |------|-----------|------------|
 | `AGENTS.md` | always | Every interaction (all agents) |
 | `main-agent-orchestration.md` | always | Every interaction (main agent) |
+| `architecture-diagrams.md` | manual | Referenced via `#` in chat |
 | `tool-use-standards.md` | manual | Referenced via `#` in chat |
+| `security-check-workflow.md` | manual | Referenced via `#` in chat |
 | `backend/backend-standards.md` | fileMatch: `backend/**/*` | Any backend file is read |
 | `backend/s3-vectors-rag-chatbot.md` | manual | Referenced via `#` in chat |
-| `frontend/frontend-standards.md` | fileMatch: `frontend/**/*` | Any frontend file is read |
-| `frontend/frontend-api-integration.md` | fileMatch: `frontend/**/*` | Any frontend file is read |
-| `frontend/frontend-components.md` | fileMatch: `frontend/**/*` | Any frontend file is read |
-| `frontend/frontend-error-handling.md` | fileMatch: `frontend/**/*` | Any frontend file is read |
-| `frontend/frontend-state-management.md` | fileMatch: `frontend/**/*` | Any frontend file is read |
-| `frontend/frontend-testing.md` | fileMatch: `frontend/**/*` | Any frontend file is read |
+| `frontend/frontend-core.md` | fileMatch: `frontend/**/*` | Any frontend file is read |
+| `frontend/frontend-integration-api.md` | fileMatch: `frontend/**/*` | Any frontend file is read |
+| `frontend/frontend-integration-aws.md` | fileMatch: `frontend/**/*` | Any frontend file is read |
+| `frontend/frontend-integration-patterns.md` | fileMatch: `frontend/**/*` | Any frontend file is read |
+| `frontend/frontend-state-i18n.md` | fileMatch: `frontend/**/*` | Any frontend file is read |
+| `frontend/frontend-styling.md` | fileMatch: `frontend/**/*` | Any frontend file is read |
 | `security/security-iam-secrets.md` | manual | Referenced via `#` in chat |
 | `security/security-data-encryption.md` | manual | Referenced via `#` in chat |
 | `security/security-operations.md` | manual | Referenced via `#` in chat |
 | `security/security-code-dependencies.md` | manual | Referenced via `#` in chat |
 | `security/security-compliance.md` | manual | Referenced via `#` in chat |
+| `security/security-scanning.md` | manual | Referenced via `#` in chat |

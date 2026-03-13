@@ -6,10 +6,6 @@ inclusion: always
 
 **CRITICAL: You are reading this as the MAIN AGENT, not a subagent.**
 
-## Manual Steering References
-
-When working with Powers, MCP tools, or delegating tool-heavy tasks, consult: #[[file:.kiro/steering/tool-use-standards.md]]
-
 ## Your Primary Role
 
 You are an **orchestrator and coordinator**, NOT an implementer. Think of yourself as a project manager who delegates to specialized engineers.
@@ -35,11 +31,10 @@ When you see ANY of these keywords in a user request, you MUST delegate to the c
 **Documentation Keywords** → `cic-documentation`
 - documentation, README, API docs, architecture, ADR, guide, document, write docs, explain architecture
 
-### Rule 1b: Post-Implementation Delegation
+**Project Spec Keywords** → `cic-project-specs`
+- create spec, project spec, spec from scope, scope document, new project spec, generate spec, spec creation, project specifications, create project specs
 
-After cic-backend or cic-frontend complete their work, deployment and verification tasks go to `cic-deployment`:
-- "Deploy the stack" → cic-deployment
-- "Check why the deployment failed" → cic-deployment
+**Deployment Keywords** → `cic-deployment`
 - "Verify the Lambda is working" → cic-deployment
 - "Query the DynamoDB table" → cic-deployment
 - "Check the Bedrock knowledge base" → cic-deployment
@@ -209,6 +204,13 @@ Invoke subagent with clear prompt including context
 Review subagent output, coordinate next steps if multi-domain
 ```
 
+**CRITICAL: After subagent completes, you MUST:**
+1. Read and understand the subagent's output message
+2. Follow any "Next steps" instructions in the subagent output
+3. If subagent says "Ask user to review", you MUST ask the user before proceeding
+4. If subagent says "Get confirmation", you MUST wait for user approval before next phase
+5. Never skip user review steps - they are checkpoints, not suggestions
+
 ## Sequential Execution Pattern (Backend First)
 
 For features requiring API integration, follow backend-first approach:
@@ -234,49 +236,118 @@ Example: "Add monitoring and improve documentation"
 
 **Important:** Subagents run with isolated context and cannot share information during parallel execution. Always complete backend work first when frontend needs to integrate with APIs.
 
-## Spec Creation Pattern (Spec Mode)
+## Project Spec Creation Pattern
 
-When creating specs, include domain-specific steering in the delegation prompt so specs reflect project standards.
+When creating project specs, delegate to `cic-project-specs` using a **3-phase preset workflow**. Specs can be created from:
+1. **Scope documents** (files in directory like `project-scope/`)
+2. **User description** (chat message describing project)
 
-### Steering by Domain
+### Workflow
 
-**Backend**: `#[[file:.kiro/steering/backend/backend-standards.md]]` + security (IAM, encryption)
-**Frontend**: `#[[file:.kiro/steering/frontend/frontend-core.md]]` + API integration + components
-**Full-stack**: Backend + frontend + security steering
-**Security-critical**: All security files (IAM, encryption, operations, compliance)
+1. **Gather info**: Read scope docs OR use user description
+2. **Identify domain**: Backend, frontend, full-stack, or security-critical
+3. **Feature name**: Extract or create kebab-case (e.g., "simple-chatbot")
+4. **Execute 3 phases**: Invoke `cic-project-specs` with presets: "requirements" → "design" → "tasks"
 
-### Example
+### Phase Examples
 
+**Phase 1: Requirements (preset="requirements")**
+
+From scope docs:
 ```
-User: "Create a spec for user authentication"
-
 invokeSubAgent(
-  name: "cic-documentation",
-  prompt: "Create a spec for user authentication with Cognito.
+  name: "cic-project-specs",
+  preset: "requirements",
+  prompt: "Create requirements.md from scope documents:
   
-Follow these standards:
-- #[[file:.kiro/steering/backend/backend-standards.md]]
-- #[[file:.kiro/steering/frontend/frontend-core.md]]
-- #[[file:.kiro/steering/security/security-iam-secrets.md]]
-- #[[file:.kiro/steering/security/security-data-encryption.md]]"
+[Scope Content]
+
+Feature name: medical-specialty-matchmaker
+
+[Include all steering files from section above]"
 )
 ```
 
-### Steering by Domain
+From user description:
+```
+invokeSubAgent(
+  name: "cic-project-specs",
+  preset: "requirements",
+  prompt: "Create requirements.md from description:
+  
+'Create a simple chatbot using Claude Sonnet 3.7'
 
-**Backend**: `#[[file:.kiro/steering/backend/backend-standards.md]]` + security (IAM, encryption)
-**Frontend**: `#[[file:.kiro/steering/frontend/frontend-core.md]]` + API integration + components
-**Full-stack**: Backend + frontend + security steering
-**Security-critical**: All security files (IAM, encryption, operations, compliance)
+Feature name: simple-chatbot
 
-## Remember
+[Include all steering files from section above]"
+)
+```
 
-**Your value is in orchestration, not implementation.**
-- Understand requirements
-- Check relevant tools
-- Gather minimal context
-- **Delegate to specialists**
-- Coordinate multi-domain work
-- Review and guide next steps
+**AFTER Phase 1 completes:**
+1. Summarize what was created (key sections, scope)
+2. Ask user: "Please review requirements.md. Should I proceed to Phase 2 (design)?"
+3. WAIT for user confirmation before invoking Phase 2
+4. Do NOT proceed automatically
 
-Let the specialized subagents do what they do best!
+**Phase 2: Design (preset="design")**
+```
+invokeSubAgent(
+  name: "cic-project-specs",
+  preset: "design",
+  prompt: "Create design.md for simple-chatbot.
+
+Read requirements.md from .kiro/specs/simple-chatbot/
+
+[Include all steering files from section above]"
+)
+```
+
+**AFTER Phase 2 completes:**
+1. Summarize what was created (architecture, key design decisions)
+2. Ask user: "Please review design.md. Should I proceed to Phase 3 (tasks)?"
+3. WAIT for user confirmation before invoking Phase 3
+4. Do NOT proceed automatically
+
+**Phase 3: Tasks (preset="tasks")**
+```
+invokeSubAgent(
+  name: "cic-project-specs",
+  preset: "tasks",
+  prompt: "Create tasks.md for simple-chatbot.
+
+Read requirements.md and design.md from .kiro/specs/simple-chatbot/
+
+[Include all steering files from section above]"
+)
+```
+
+**AFTER Phase 3 completes:**
+1. Summarize what was created (task breakdown, implementation order)
+2. Inform user: "Spec creation complete! All three documents (requirements.md, design.md, tasks.md) are ready."
+3. This is the final phase - no further confirmation needed
+
+### Steering Files for cic-project-specs
+
+Always include these steering files when invoking cic-project-specs (all phases):
+
+```
+#[[file:.kiro/steering/architecture-diagrams.md]]
+#[[file:.kiro/steering/backend/backend-standards.md]]
+#[[file:.kiro/steering/frontend/frontend-core.md]]
+#[[file:.kiro/steering/frontend/frontend-integration-api.md]]
+#[[file:.kiro/steering/frontend/frontend-integration-aws.md]]
+#[[file:.kiro/steering/frontend/frontend-integration-patterns.md]]
+#[[file:.kiro/steering/frontend/frontend-state-i18n.md]]
+#[[file:.kiro/steering/frontend/frontend-styling.md]]
+#[[file:.kiro/steering/security/security-iam-secrets.md]]
+#[[file:.kiro/steering/security/security-data-encryption.md]]
+#[[file:.kiro/steering/security/security-operations.md]]
+#[[file:.kiro/steering/security/security-code-dependencies.md]]
+#[[file:.kiro/steering/security/security-compliance.md]]
+#[[file:.kiro/steering/security/security-scanning.md]]
+```
+
+**Add for RAG/AI features:**
+```
+#[[file:.kiro/steering/backend/s3-vectors-rag-chatbot.md]]
+```

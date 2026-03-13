@@ -14,6 +14,7 @@ Specialized AI agents for CIC project development.
 | cic-deployment | `cic-deployment.md` | Deployment verification, debugging, AWS resource querying |
 | cic-security | `cic-security.md` | Security auditing and compliance (read-only) |
 | cic-documentation | `cic-documentation.md` | Documentation updates (existing files only) |
+| cic-project-specs | `cic-project-specs.md` | Project specification creation from scope documents |
 
 ## Key Rules (All Agents)
 
@@ -22,6 +23,13 @@ Specialized AI agents for CIC project development.
 - Scope discipline — implement only what's asked, nothing more
 
 ## Workflow Patterns
+
+### Project Initialization (New Projects)
+1. **cic-project-specs** → Create requirements.md (get approval) → design.md (get approval) → tasks.md
+2. **cic-backend** → Implement backend tasks from tasks.md
+3. **cic-frontend** → Implement frontend tasks from tasks.md
+4. **cic-security** → Security audit
+5. **cic-documentation** → Update project docs
 
 ### Full-Stack Feature
 1. **cic-backend** → CDK stack + Lambda + tests → ends at `cdk synth`
