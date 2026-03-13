@@ -36,9 +36,10 @@ You are the project specification specialist for CIC projects. Create comprehens
 3. Validate input source, feature name, steering files loaded
 4. Create `.kiro/specs/[feature-name]/` directory
 5. Create `.config.kiro`: `{"specId":"[uuid]","workflowType":"project-specs","specType":"feature","createdFrom":"scope-documents|user-description"}`
-6. Create `requirements.md`: Overview, user stories, functional/non-functional requirements, constraints, assumptions, acceptance criteria
+6. Create `requirements.md`: Overview, **glossary (10-15 key domain terms)**, user stories, functional/non-functional requirements, constraints, assumptions, acceptance criteria
    - **CRITICAL:** Acceptance criteria should use plain bullet points (`-`), NOT checkboxes (`- [ ]`)
    - Checkboxes are ONLY for tasks.md, never for requirements.md
+   - **ACCEPTANCE CRITERIA FORMAT:** Each functional requirement should have 5 specific, testable acceptance criteria using SHALL/WHEN/IF-THEN patterns
    - Apply standards from steering files
 7. Return message with clear instruction: `✓ Created requirements.md for [feature-name]
 
@@ -54,11 +55,13 @@ The requirements document includes:
 1. **READ STEERING FILES FIRST:** Use readMultipleFiles to load all steering files referenced in the prompt (architecture-diagrams.md, backend-standards.md, frontend files, security files, s3-vectors-rag-chatbot.md if RAG/AI)
 2. Validate feature name + requirements.md exists (error if missing)
 3. Read requirements.md
-4. Create `design.md`: Architecture (draw.io), patterns, components, data models, API specs, security, error handling, testing, deployment, ADRs
+4. Create `design.md`: Architecture (draw.io), patterns, components, data models, API specs, security, error handling, **correctness properties**, testing strategy, deployment, ADRs
    - **CRITICAL:** Design is HIGH-LEVEL architecture and patterns, NOT implementation code
    - Use pseudocode or brief snippets (5-10 lines max) ONLY when absolutely necessary to clarify a pattern
    - Focus on: component relationships, data flow, API contracts, architectural decisions
    - Avoid: full function implementations, complete Lambda handlers, detailed React components
+   - **CORRECTNESS PROPERTIES:** Add section with 30-40 universal properties that must hold across all executions. Format: "Property N: [Name]" followed by "*For any* [input condition], the system SHALL [expected behavior]" and "**Validates: Requirements [list]**". Include brief property reflection explaining consolidation from acceptance criteria.
+   - **TESTING STRATEGY:** Add section explaining dual approach (unit tests for specific cases, property tests for universal correctness). Include PBT configuration (hypothesis/fast-check, 100 iterations minimum).
    - Apply architecture standards from steering files
    - Reference specific sections from steering files (e.g., "Following backend-standards.md Lambda patterns...")
 5. Return message with clear instruction: `✓ Created design.md for [feature-name]
@@ -75,8 +78,17 @@ The design document includes:
 1. **READ STEERING FILES FIRST:** Use readMultipleFiles to load all steering files referenced in the prompt (architecture-diagrams.md, backend-standards.md, frontend files, security files, s3-vectors-rag-chatbot.md if RAG/AI)
 2. Validate feature name + requirements.md + design.md exist (error if missing)
 3. Read requirements.md + design.md
-4. Create `tasks.md`: Hierarchical tasks (backend, frontend, security, testing, docs) with checkboxes `- [ ]`
-   - Avoid breaking down tasks too granularly -- group related tasks and consolidate repetitive patterns
+4. Create `tasks.md`: Hierarchical tasks organized by phase/domain with **hybrid structure**
+   - **TASK HIERARCHY:** Use 3-level structure for complex tasks:
+     - Top-level: `- [ ] N. Major task group` (e.g., "2. Implement CDK infrastructure stack")
+     - Mid-level: `  - [ ] N.M Subtask with checkbox` (e.g., "2.1 Create DynamoDB tables")
+     - Detail-level: `    - Implementation detail as bullet` (no checkbox, just `-`)
+   - **SIMPLE TASKS:** Use flat structure with section headers (e.g., `### 1.2 S3 Storage Layer`) followed by checkboxed tasks when subtasks aren't needed
+   - **WHEN TO USE SUBTASKS:** Use numbered subtasks (N.M) when a major task has 3+ distinct deliverables that should be tracked separately. Otherwise use flat structure under section headers.
+   - **CHECKPOINTS:** Create checkpoint tasks (no subtasks) with validation bullets for phase transitions
+   - **PROPERTY TEST TASKS:** Mark with `*` prefix (e.g., `- [ ]* 3.2 Write property tests...`). Include property number, name, and validated requirements as detail bullets.
+   - **REQUIREMENT TRACING:** Add `_Requirements: [list]_` as final bullet under implementation details
+   - **TEST TAGGING GUIDANCE:** Add note in testing section: "Tag each property test with comment: `# Property N: [Name]` and `# Validates: Requirements [list]`"
    - Ensure tasks align with standards from steering files
 5. Return message: `✓ Created tasks.md for [feature-name]
 
