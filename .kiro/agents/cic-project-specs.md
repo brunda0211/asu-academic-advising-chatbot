@@ -49,8 +49,9 @@ The requirements document includes:
 
 1. Validate feature name + requirements.md exists (error if missing)
 2. Read requirements.md
-3. Create `design.md`: Architecture (Mermaid), patterns, components, data models, API specs, security, error handling, testing, deployment, ADRs
-4. Return message with clear instruction: `✓ Created design.md for [feature-name]
+3. Create `design.md`: Architecture, patterns, components, data models, API specs, security, error handling, testing, deployment, ADRs
+4. Avoid overly specific code examples
+5. Return message with clear instruction: `✓ Created design.md for [feature-name]
 
 The design document includes:
 - [Brief summary of key sections]
@@ -64,7 +65,8 @@ The design document includes:
 1. Validate feature name + requirements.md + design.md exist (error if missing)
 2. Read requirements.md + design.md
 3. Create `tasks.md`: Hierarchical tasks (backend, frontend, security, testing, docs) with checkboxes `- [ ]`
-4. Return message: `✓ Created tasks.md for [feature-name]
+4. Avoid breaking down tasks too granularly.
+5. Return message: `✓ Created tasks.md for [feature-name]
 
 The tasks document includes:
 - [Brief summary of task breakdown]
