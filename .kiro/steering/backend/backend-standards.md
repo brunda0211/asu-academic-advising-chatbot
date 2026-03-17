@@ -6,7 +6,7 @@ fileMatchPattern: "backend/**/*"
 # CIC Backend Standards
 
 **Languages**: Lambdas (Python), CDK stack (TypeScript). 
-**Architecture**: Single stack unless complexity requires otherwise; serverless-first, cost-effective, resilient. Always use latest AWS resources/services; verify with MCP/web search before suggesting changes. Optimize for fewer resources while maintaining clarity. Never change strategy without approval. 
+**Architecture**: Single stack unless complexity requires otherwise; serverless-first, cost-effective, resilient. Always use latest AWS resources/services; verify with `aws-knowledge-mcp-server` (https://knowledge-mcp.global.api.aws) for AWS blogs, latest updates, and best practices before suggesting changes. Optimize for fewer resources while maintaining clarity. Never change strategy without approval. 
 **Naming**: Lambda dirs (kebab-case: `resume-parser`), Python files (snake_case), CDK constructs (PascalCase: `UserTable`), Handler (always `lambda_handler(event, context)`).
 
 ## Dependency Versions
@@ -330,6 +330,10 @@ For projects that use Bedrock Knowledge Base + S3 Vectors for RAG, follow the pa
 ## API Gateway
 
 For projects that use API Gateway (REST API V1 or HTTP API V2), follow the patterns in #[[file:.kiro/steering/backend/api-gateway-patterns.md]]. Covers when to use each type, streaming support, authentication, CORS, Lambda integration, and monitoring.
+
+## Bedrock Integration
+
+For projects that use Amazon Bedrock for AI/ML capabilities, follow the patterns in #[[file:.kiro/steering/backend/bedrock-patterns.md]]. Covers model invocation (foundation models vs inference profiles), IAM permissions for cross-region profiles, streaming responses, CORS configuration, and common pitfalls.
 
 ## Security Steering References
 

@@ -49,6 +49,33 @@ Use `webFetch` to pull the reference page when you need exact syntax, parameters
 - `already exists` → Resource name conflict
 - `AccessDenied` → Deployment role missing permissions
 
+## Common Deployment Pitfalls
+
+### CORS Configuration Conflicts
+
+**Problem**: Browser CORS errors even though CORS is configured correctly.
+
+**Root Cause**: CORS headers set in BOTH Lambda Function URL config AND Lambda code. When both set `Access-Control-Allow-Origin`, the browser sees duplicate headers and rejects the request.
+
+**Solution**: Choose ONE place for CORS headers:
+- **Recommended**: Use Lambda Function URL CORS config (cleaner, no code changes needed)
+- **Alternative**: Handle CORS in Lambda code only (for dynamic CORS logic)
+
+**Never do both.** If Function URL has CORS config, Lambda code should NOT set CORS headers.
+
+### CDK Bootstrap Bucket Deleted
+
+**Problem**: `cdk deploy` fails with S3 bucket errors, but `cdk bootstrap` reports "no changes".
+
+**Root Cause**: Someone manually deleted the `cdk-hnb659fds-assets-*` bucket from S3, but the CloudFormation stack still exists. CDK checks CloudFormation (not S3) and thinks bootstrap is complete.
+
+**Solution**: Manually recreate the bucket:
+```bash
+aws s3 mb s3://cdk-hnb659fds-assets-ACCOUNT-REGION
+```
+
+Then retry deployment. The bucket name format is always `cdk-hnb659fds-assets-{account}-{region}`.
+
 ## Deployment Script Creation
 
 When the user completes development and requests a deployment script, create a `deploy.sh` file following these principles:

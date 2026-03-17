@@ -47,7 +47,7 @@ Common tool categories:
 **Design/Frontend:** Before implementing UI, creating components, or working with design systems
 **APIs/Integration:** When integrating third-party services, learning frameworks, or working with APIs
 **Version Control:** Before performing git operations, reviewing commits, managing branches, or working with repositories
-**AWS Latest Updates:** Use `aws-knowledge-mcp-server` (if available in mcp.json) to discover the latest AWS service updates, new features, and API changes before implementing AWS services (e.g., REST API V1 streaming support added Nov 19, 2025)
+**AWS Latest Updates & Blogs:** Use `aws-knowledge-mcp-server` (configured at `https://knowledge-mcp.global.api.aws`) to discover the latest AWS service updates, new features, API changes, and AWS blog posts before implementing AWS services (e.g., REST API V1 streaming support added Nov 19, 2025). This is the ONLY approved source for AWS blogs and latest updates.
 
 ## Proactive vs Reactive
 
@@ -85,12 +85,17 @@ User: "Create a Lambda function"
 ✅ Right: kiroPowers list → Use aws-infrastructure-as-code → Query best practices → Write code
 ```
 
-### AWS Latest Updates
+### AWS Latest Updates & Blogs
 ```
 User: "Implement API Gateway streaming"
 
 ❌ Wrong: Use outdated patterns from general knowledge
 ✅ Right: Query aws-knowledge-mcp-server → Discover Nov 19, 2025 REST API V1 streaming support → Implement with latest patterns
+
+User: "Find AWS blog posts about Bedrock best practices"
+
+❌ Wrong: Use web search or general knowledge
+✅ Right: Query aws-knowledge-mcp-server (https://knowledge-mcp.global.api.aws) → Search AWS blogs → Get official AWS guidance
 ```
 
 ### Security Review

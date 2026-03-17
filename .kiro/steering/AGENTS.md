@@ -16,7 +16,7 @@ This file provides universal standards for all AI agents working on CIC (Cloud I
 5. **Use CDK L2/L3 constructs** — Never manual console configurations
 6. **Latest stable versions** — Always use latest stable dependency versions
 
-**Important:** Flag conflicts with these standards and propose alternatives. Search official docs when unfamiliar with services/libraries; verify API usage and best practices before implementation.
+**Important:** Flag conflicts with these standards and propose alternatives. For AWS services, ALWAYS use `aws-knowledge-mcp-server` (https://knowledge-mcp.global.api.aws) to search AWS blogs, official docs, and latest updates when unfamiliar with services/libraries; verify API usage and best practices before implementation.
 
 ## Technology Stack
 
