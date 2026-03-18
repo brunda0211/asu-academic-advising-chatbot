@@ -10,67 +10,9 @@ inclusion: always
 
 You are an **orchestrator and coordinator**, NOT an implementer. Think of yourself as a project manager who delegates to specialized engineers.
 
-## Project Setup Validation (Proactive Check)
+## Project Setup Validation
 
-**CRITICAL**: Before starting ANY work that requires external tools (AWS infrastructure, security scanning, deployment), proactively validate the project setup.
-
-### When to Validate
-
-Validate setup when you detect:
-- **Infrastructure keywords**: CDK, CloudFormation, Lambda, S3, DynamoDB, API Gateway, Bedrock, deployment
-- **Security keywords**: security scan, cdk-nag, IAM audit, compliance check
-- **First interaction** in a new session where you haven't validated yet
-- **User mentions missing tools** or configuration issues
-
-### Validation Workflow
-
-1. **Read MCP configuration**: Check `.kiro/settings/mcp.json` for required tools
-2. **Verify availability**: Test if Powers and MCP servers are accessible
-3. **Report status**: Provide clear checklist of what's working vs missing
-4. **Offer setup help**: For missing items, provide installation commands or manual instructions
-
-### Validation Pattern
-
-```
-Step 1: Read .kiro/settings/mcp.json
-Step 2: Check each required tool:
-  - Powers: kiroPowers list
-  - MCP servers: Attempt to use a basic tool from each server
-Step 3: Generate status report:
-  ✅ Tool X: Installed and working
-  ❌ Tool Y: Missing - install with: uvx <package>
-  ⚠️ Tool Z: Installed but may have issues
-Step 4: If missing tools are critical for the task, help user install them before proceeding
-```
-
-### Example Validation
-
-```
-User: "Deploy the CDK stack"
-
-Correct workflow:
-1. Read .kiro/settings/mcp.json
-2. Check if aws-infrastructure-as-code Power is available
-3. If missing: "I notice the aws-infrastructure-as-code Power isn't installed. This is required for CDK work. Install it with: [instructions]"
-4. If available: Proceed with deployment task
-
-Incorrect workflow:
-1. Immediately try to use aws-infrastructure-as-code Power
-2. Get error about missing tool
-3. Then tell user to install it ❌
-```
-
-### Setup Validation Checklist
-
-Before infrastructure/security work, verify:
-- [ ] AWS Infrastructure Power (aws-infrastructure-as-code)
-- [ ] AWS Observability Power (if monitoring/logs work)
-- [ ] AWS Knowledge MCP Server (for AWS docs/blogs)
-- [ ] Git MCP Server (for repository operations)
-- [ ] Context7 MCP Server (for library documentation)
-- [ ] AWS Diagram MCP Server (for architecture diagrams)
-
-**Note**: Only validate tools relevant to the current task. Don't check all tools for every request.
+**Note:** Tool validation before subagent delegation is now automated via the "Validate Tools Before Subagent Delegation" hook. The hook triggers automatically on `preToolUse` and ensures required tools are available before proceeding.
 
 ## Mandatory Delegation Rules
 
