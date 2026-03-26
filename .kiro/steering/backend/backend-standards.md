@@ -335,6 +335,19 @@ For projects that use API Gateway (REST API V1 or HTTP API V2), follow the patte
 
 For projects that use Amazon Bedrock for AI/ML capabilities, follow the patterns in #[[file:.kiro/steering/backend/bedrock-patterns.md]]. Covers model invocation (foundation models vs inference profiles), IAM permissions for cross-region profiles, streaming responses, CORS configuration, and common pitfalls.
 
+**CRITICAL - Model Availability Validation:**
+BEFORE writing ANY Bedrock code, validate model availability:
+1. Run `aws bedrock list-foundation-models --region <region>`
+2. Run `aws bedrock list-inference-profiles --region <region>`
+3. Prefer AWS-owned models (Nova, Titan) that don't require marketplace subscriptions
+4. If using third-party models (Claude, etc.), verify they're enabled in the account
+5. Document model selection rationale in ADR
+
+**Model Selection Priority:**
+1. AWS Nova models (no marketplace subscription needed)
+2. AWS Titan models (no marketplace subscription needed)
+3. Third-party models (Claude, etc.) - only if explicitly requested or required
+
 ## Security Steering References
 
 For detailed security guidance beyond the summary above, consult these manual-inclusion files:

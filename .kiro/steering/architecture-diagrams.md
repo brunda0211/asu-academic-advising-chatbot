@@ -40,8 +40,13 @@ Architecture sections in design.md must use this structure:
 
 **CRITICAL**: When designing architectures, consolidate Lambda functions to minimize operational complexity and cost:
 
-- If work can be done in 2 Lambda functions, do NOT create 4
+- If work can be done in 2 Lambda functions, do NOT create 4 or 5
 - Combine related operations into single functions with routing logic
+- **User preference**: Aim for 2-3 Lambda functions maximum for typical projects
+  - Lambda 1: Upload and ingestion operations
+  - Lambda 2: Chat/query handling
+  - Lambda 3: Additional features (notes, flashcards, export) if logic is similar
+
 - Only separate Lambdas when there are clear reasons:
   - Different execution requirements (memory, timeout, runtime)
   - Different IAM permissions (security isolation)
@@ -51,8 +56,10 @@ Architecture sections in design.md must use this structure:
 **Examples:**
 - ✅ Single Lambda with routing for CRUD operations on same resource
 - ✅ Single Lambda handling multiple related API endpoints
+- ✅ Single Lambda for notes + flashcards (both summarize content, similar workflow)
 - ❌ Separate Lambda for each CRUD operation when they share permissions
 - ❌ Separate Lambda for each API endpoint when they have similar logic
+- ❌ 5 Lambdas when 2-3 would suffice
 
 **Document the decision**: If you choose to separate Lambdas, add an ADR explaining why consolidation wasn't appropriate.
 

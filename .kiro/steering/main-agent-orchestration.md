@@ -257,6 +257,12 @@ When creating project specs, delegate to `cic-project-specs` using a **3-phase p
 
 When executing tasks from tasks.md:
 
+**Test Execution Timing:**
+- ❌ Do NOT add tests during initial implementation of each task
+- ✅ Add tests ONLY after ALL implementation tasks are complete
+- Rationale: Running tests multiple times during development is inefficient and frustrating
+- Exception: If user explicitly requests tests during implementation
+
 **Parallel Execution Rules:**
 - ✅ Different domains (backend + frontend, frontend + backend deployment)
 - ✅ Different files/modules (Lambda A + Lambda B)
@@ -267,10 +273,67 @@ When executing tasks from tasks.md:
 **Quick Check:** Can both tasks complete without knowing the other's result? → Parallelize
 
 **Example:**
-Good: cic-backend (ChatLambda) + cic-backend (MatchLambda) + cic-frontend (setup) Bad: cic-backend (shared utils) + cic-backend (Lambda using those utils)
-
+Good: cic-backend (ChatLambda) + cic-backend (MatchLambda) + cic-frontend (setup) 
+Bad: cic-backend (shared utils) + cic-backend (Lambda using those utils)
 
 **Default:** Execute sequentially. Parallelize only when clearly independent.
+
+### UI/UX Design Upload (After Tasks.md Creation)
+
+**CRITICAL**: After tasks.md is created and before implementation begins, offer the user the option to provide UI/UX designs:
+
+```
+After Phase 3 completes:
+1. Summarize tasks.md creation
+2. Ask: "Would you like to provide UI/UX designs for the frontend implementation?
+   
+   Options:
+   - Share a Figma design URL (I can extract design context automatically)
+   - Upload design images/mockups (PNG, JPG, etc.)
+   - Skip and use best practices
+   
+   I can use these as reference when implementing the frontend."
+
+3. If user provides Figma URL:
+   - Use Figma Power to extract design context
+   - Store design reference in .kiro/specs/{feature-name}/designs/
+   - Include Figma URL when delegating to cic-frontend
+   
+4. If user uploads images:
+   - Store references in .kiro/specs/{feature-name}/designs/
+   - Include image references when delegating to cic-frontend
+   
+5. If user declines or has no designs:
+   - Proceed with implementation using best practices
+```
+
+**Design Reference Pattern:**
+
+When delegating to cic-frontend with Figma designs:
+```
+invokeSubAgent(
+  name: "cic-frontend",
+  prompt: "Implement [component] following the Figma design.
+
+Figma design URL: https://figma.com/design/...
+
+The cic-frontend agent will automatically use Figma Power to extract design context.
+
+[Rest of implementation details]"
+)
+```
+
+When delegating to cic-frontend with uploaded images:
+```
+invokeSubAgent(
+  name: "cic-frontend",
+  prompt: "Implement [component] following the uploaded design mockup.
+
+Design reference: .kiro/specs/{feature-name}/designs/mockup.png
+
+[Rest of implementation details]"
+)
+```
 
 ### Phase Examples
 
@@ -347,7 +410,8 @@ Read requirements.md and design.md from .kiro/specs/simple-chatbot/
 **AFTER Phase 3 completes:**
 1. Summarize what was created (task breakdown, implementation order)
 2. Inform user: "Spec creation complete! All three documents (requirements.md, design.md, tasks.md) are ready."
-3. This is the final phase - no further confirmation needed
+3. **Ask about UI/UX designs**: "Would you like to upload any UI/UX design images or mockups? I can use them as reference when implementing the frontend."
+4. Wait for user response before proceeding to implementation
 
 ### Steering Files for cic-project-specs
 

@@ -171,13 +171,24 @@ S3 event → EventBridge → SQS → Processor Lambda → KB ingestion job → S
 
 ## Lambda Permissions (TypeScript)
 
+**CRITICAL - Validate Model Availability First:**
+Before adding IAM permissions, validate models are available:
+```bash
+aws bedrock list-foundation-models --region <region>
+aws bedrock list-inference-profiles --region <region>
+```
+
+**Prefer AWS-owned models** (Nova, Titan) that don't require marketplace subscriptions.
+
 ```typescript
 // Bedrock model invocation — scope to specific models
+// IMPORTANT: Validate these models are available in your region first
 lambdaRole.addToPolicy(new iam.PolicyStatement({
   actions: ['bedrock:InvokeModel', 'bedrock:InvokeModelWithResponseStream'],
   resources: [
     `arn:aws:bedrock:${this.region}::foundation-model/amazon.titan-embed-text-v2:0`,
-    // Add your LLM ARN (Nova Pro, Claude, etc.)
+    // Prefer AWS-owned models: us.amazon.nova-pro-v1:0, us.amazon.nova-lite-v1:0
+    // Add your LLM ARN only after validating availability
   ],
 }));
 
