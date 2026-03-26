@@ -93,7 +93,7 @@ Guidance for implementing API Gateway (REST API V1 and HTTP API V2) in CDK proje
   statusCode: 200,
   headers: {
     'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Origin': process.env.CORS_ALLOWED_ORIGIN || 'http://localhost:3000',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
   },
@@ -242,7 +242,7 @@ function createResponse(statusCode, body) {
     statusCode,
     headers: {
       'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Origin': process.env.CORS_ALLOWED_ORIGIN || 'http://localhost:3000',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
     },

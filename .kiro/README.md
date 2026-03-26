@@ -16,15 +16,17 @@ This project includes pre-configured MCP servers that require the following tool
 ### AWS Configuration (for AWS Powers)
 If you plan to use AWS-related Powers (CloudWatch, CloudTrail, IAM Policy Autopilot):
 1. Configure AWS credentials using AWS CLI or environment variables
-2. Update `AWS_PROFILE` in `.kiro/settings/mcp.json` to match your AWS profile name
-3. Update `AWS_REGION` if you use a region other than `us-east-1`
+2. Replace `<YOUR_AWS_PROFILE>` in `.kiro/settings/mcp.json` with your AWS profile name (e.g., `default`, `my-project-admin`)
+3. Replace `<YOUR_AWS_REGION>` with your target region (e.g., `us-east-1`, `us-west-2`)
+
+These placeholders appear in the CloudWatch, CloudWatch Application Signals, and CloudTrail server configs. All three must be updated before those servers will connect.
 
 **Example:**
 ```json
 {
   "power-aws-observability-awslabs.cloudwatch-mcp-server": {
     "env": {
-      "AWS_PROFILE": "your-profile-name",
+      "AWS_PROFILE": "my-project-admin",
       "AWS_REGION": "us-west-2"
     }
   }

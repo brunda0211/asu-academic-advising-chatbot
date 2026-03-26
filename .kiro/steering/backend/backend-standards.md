@@ -17,11 +17,12 @@ fileMatchPattern: "backend/**/*"
 - AWS: Use AWS documentation tools for latest runtimes
 
 **Version pinning:**
-- Python: Exact versions (`boto3==1.36.14`)
-- npm production: Exact versions (`"next": "16.1.6"`)
-- npm dev: Caret for minor updates (`"typescript": "^5.9.3"`)
+- Python: Exact versions (e.g., `boto3==x.y.z`)
+- npm production: Exact versions (e.g., `"next": "x.y.z"`)
+- npm dev: Caret for minor updates (e.g., `"typescript": "^x.y.z"`)
+- Always look up the latest compatible version before writing dependency files — never assume a version number
 
-**Workflow:** Check versions → Verify compatibility → Write dependency file (not the reverse)
+**Workflow:** Check latest versions (npm view, PyPI, Context7) → Verify compatibility with project constraints (e.g., Amplify-supported Next.js range) → Write dependency file
 
 ## Build & Test Commands
 
@@ -87,22 +88,28 @@ def create_response(status_code: int, body: dict) -> dict:
 
 ## Lambda Functions
 
-**Handler Pattern**: AWS clients at module level (reused across warm invocations); use `os.environ.get()` never `[]`; validate env vars at start; consistent response shape `{'statusCode': int, 'body': json.dumps(...)}}`; `print()` for logging (CloudWatch captures stdout); keep handlers thin.
+**Handler Pattern**: AWS clients at module level (reused across warm invocations); use `os.environ.get()` never `[]`; validate env vars at start; consistent response shape `{'statusCode': int, 'body': json.dumps(...)}}`; structured JSON logging via `logging` module (never raw `print()`); keep handlers thin.
 
 ```python
-import json, boto3, os
+import json, boto3, os, logging
+
+logger = logging.getLogger()
+logger.setLevel(os.environ.get('LOG_LEVEL', 'INFO'))
+
 dynamodb = boto3.resource('dynamodb')  # Module level
 
 def lambda_handler(event, context):
     try:
         table_name = os.environ.get('TABLE_NAME')
         if not table_name: raise ValueError("TABLE_NAME not set")
+        logger.info(json.dumps({'action': 'processing_request', 'table': table_name}))
         # Business logic
         return {'statusCode': 200, 'body': json.dumps({'data': result})}
     except ValueError as e:
+        logger.warning(json.dumps({'error': 'validation_error', 'detail': str(e)}))
         return {'statusCode': 400, 'body': json.dumps({'error': str(e)})}
     except Exception as e:
-        print(f"Error: {str(e)}")
+        logger.error(json.dumps({'error': 'unhandled_exception', 'detail': str(e)}))
         return {'statusCode': 500, 'body': json.dumps({'error': str(e)})}
 ```
 

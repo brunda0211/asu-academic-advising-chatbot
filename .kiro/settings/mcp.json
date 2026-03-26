@@ -66,8 +66,8 @@
           "awslabs.cloudwatch-mcp-server@latest"
         ],
         "env": {
-          "AWS_PROFILE": "CIC-admin",
-          "AWS_REGION": "us-east-1",
+          "AWS_PROFILE": "<YOUR_AWS_PROFILE>",
+          "AWS_REGION": "<YOUR_AWS_REGION>",
           "FASTMCP_LOG_LEVEL": "ERROR"
         },
         "disabled": false,
@@ -84,8 +84,8 @@
           "awslabs.cloudwatch-applicationsignals-mcp-server@latest"
         ],
         "env": {
-          "AWS_PROFILE": "CIC-admin",
-          "AWS_REGION": "us-east-1",
+          "AWS_PROFILE": "<YOUR_AWS_PROFILE>",
+          "AWS_REGION": "<YOUR_AWS_REGION>",
           "FASTMCP_LOG_LEVEL": "ERROR"
         },
         "disabled": false
@@ -97,8 +97,8 @@
           "awslabs.cloudtrail-mcp-server@latest"
         ],
         "env": {
-          "AWS_PROFILE": "CIC-admin",
-          "AWS_REGION": "us-east-1",
+          "AWS_PROFILE": "<YOUR_AWS_PROFILE>",
+          "AWS_REGION": "<YOUR_AWS_REGION>",
           "FASTMCP_LOG_LEVEL": "ERROR"
         },
         "transportType": "stdio"

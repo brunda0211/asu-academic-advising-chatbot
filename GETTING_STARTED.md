@@ -96,9 +96,9 @@ Use cic-documentation to update the architecture documentation based on the impl
 
 ### Fix Deployment
 
-If you face issues with deployment , use the deployment agent:
+If you face issues with deployment, use the deployment agent:
 ```
-Use cic-deployment to update the fix [deployment_issue] which has error code [Paste Error Code from console logs or AWS console]
+Use cic-deployment to fix [deployment_issue] with error code [Paste Error Code from console logs or AWS console]
 ```
 
-The agents will handle the updates automatically,  no manual editing required.
+The agents will handle the updates automatically, no manual editing required.
