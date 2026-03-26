@@ -39,7 +39,7 @@ A complete MCP configuration should include:
 1. **aws-documentation** - Access AWS documentation and guides
 2. **aws-knowledge-mcp-server** - Latest AWS updates and new features
 3. **fetch** - Fetch web content and convert to markdown
-4. **github** - Git operations and repository management
+4. **git** - Git operations and repository management
 5. **figma** - Design system integration and UI component access
 6. **context7** - Up-to-date library and framework documentation
 
