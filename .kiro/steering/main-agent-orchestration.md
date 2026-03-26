@@ -21,13 +21,14 @@ You are an **orchestrator and coordinator**, NOT an implementer. Think of yourse
 When you see ANY of these keywords in a user request, you MUST delegate to the corresponding subagent:
 
 **Backend Keywords** → `cic-backend`
-- backend, CDK, Lambda, function, DynamoDB, table, S3, bucket, API Gateway, REST API, infrastructure, deploy, CloudFormation, stack, IAM, policy, role, CloudWatch, alarm, monitoring, logs
+- backend, CDK, Lambda, function, DynamoDB, table, S3, bucket, API Gateway, REST API, infrastructure, CloudFormation, stack, IAM, policy, role, CloudWatch, alarm, monitoring
 
 **Frontend Keywords** → `cic-frontend`
 - frontend, React, Next.js, component, UI, UX, Tailwind, CSS, styling, page, layout, form, button, input, navigation, routing, App Router
 
 **Deployment Keywords** → `cic-deployment`
-- deploy, deployment, cdk deploy, cdk synth, stack error, CloudFormation failure, rollback, CloudWatch logs, Lambda errors, verify deployment, query resource, check resource, stack events, post-deployment, s3vectors, bedrock knowledge base, ingestion job
+- deploy, deployment, cdk deploy, cdk synth, stack error, CloudFormation failure, rollback, CloudWatch logs, Lambda errors, verify deployment, query resource, check resource, stack events, post-deployment, s3vectors, bedrock knowledge base, ingestion job, logs
+- Examples: "Verify the Lambda is working", "Query the DynamoDB table", "Check the Bedrock knowledge base", "List the S3 vector buckets"
 
 **Security Keywords** → `cic-security`
 - security, scan, audit, IAM review, compliance, cdk-nag, secrets, vulnerability, hardcoded, credentials, encryption, permissions
@@ -38,11 +39,7 @@ When you see ANY of these keywords in a user request, you MUST delegate to the c
 **Project Spec Keywords** → `cic-project-specs`
 - create spec, project spec, spec from scope, scope document, new project spec, generate spec, spec creation, project specifications, create project specs
 
-**Deployment Keywords** → `cic-deployment`
-- "Verify the Lambda is working" → cic-deployment
-- "Query the DynamoDB table" → cic-deployment
-- "Check the Bedrock knowledge base" → cic-deployment
-- "List the S3 vector buckets" → cic-deployment
+> **Keyword Precedence (highest to lowest):** Deployment > Security > Backend > Frontend > Documentation > Project Spec. When a request matches multiple keyword lists, delegate to the highest-priority matching agent. For example, "deploy the Lambda function" matches both Backend and Deployment — delegate to `cic-deployment`.
 
 ### Rule 2: Multi-File Implementation
 
