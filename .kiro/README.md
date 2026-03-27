@@ -2,128 +2,56 @@
 
 Standard Kiro configuration for ASU CIC projects, including MCP servers, Powers, and recommended settings.
 
-## Standard MCP Configuration
+## Prerequisites
 
-### Recommended mcp.json
+This project includes pre-configured MCP servers that require the following tools:
 
-Place this configuration in `.kiro/settings/mcp.json` (workspace level) or `~/.kiro/settings/mcp.json` (user level). Note that for the 'aws-diagram' MCP server, it is recommended to use draw.io as well for best results.
+### Required
+- **uv and uvx**: Python package manager for MCP servers
+  - Installation: https://docs.astral.sh/uv/getting-started/installation/
+  - Most MCP servers use `uvx` to run without manual installation
+- **Node.js and npx**: Required for the git MCP server
+  - Installation: https://nodejs.org/
 
+### AWS Configuration (for AWS Powers)
+If you plan to use AWS-related Powers (CloudWatch, CloudTrail, IAM Policy Autopilot):
+1. Configure AWS credentials using AWS CLI or environment variables
+2. Replace `<YOUR_AWS_PROFILE>` in `.kiro/settings/mcp.json` with your AWS profile name (e.g., `default`, `my-project-admin`)
+3. Replace `<YOUR_AWS_REGION>` with your target region (e.g., `us-east-1`, `us-west-2`)
+
+These placeholders appear in the CloudWatch, CloudWatch Application Signals, and CloudTrail server configs. All three must be updated before those servers will connect.
+
+**Example:**
 ```json
 {
-  "mcpServers": {
-    "git": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-git"],
-      "env": {},
-      "disabled": false,
-      "autoApprove": [],
-      "description": "Git operations: status, commit, branch, push, pull, diff, log"
-    },
-    "context7": {
-      "url": "https://mcp.context7.com/mcp",
-      "headers": {},
-      "disabled": false,
-      "autoApprove": [],
-      "description": "Up-to-date, version-specific documentation for any library or framework"
-    },
-    "ash-security": {
-      "command": "npx",
-      "args": ["-y", "@awslabs/ash-mcp-server"],
-      "env": {},
-      "disabled": false,
-      "autoApprove": [],
-      "description": "Automated Security Helper: SAST, IaC scanning, secrets detection, SCA"
-    },
-    "fetch": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-fetch"],
-      "env": {},
-      "disabled": false,
-      "autoApprove": [],
-      "description": "Fetch web content and convert to markdown for documentation access"
-    },
-    "aws-diagram": {
-      "command": "/Users/etloaner/.local/bin/uvx",
-      "args": [
-        "awslabs.aws-diagram-mcp-server@latest"
-      ],
-      "env": {
-        "FASTMCP_LOG_LEVEL": "ERROR"
-      },
-      "disabled": false,
-      "autoApprove": [
-        "generate_diagram"
-      ]
-    },
+  "power-aws-observability-awslabs.cloudwatch-mcp-server": {
+    "env": {
+      "AWS_PROFILE": "my-project-admin",
+      "AWS_REGION": "us-west-2"
+    }
   }
 }
 ```
 
-## Kiro Powers Configuration
+## Recommended MCP Setup
 
-### Core Powers to Install
+A complete MCP configuration should include:
 
-Install these powers through the Kiro IDE Powers panel or from [kiro.dev/powers](https://kiro.dev/powers):
+**Core MCP Servers:**
+1. **aws-documentation** - Access AWS documentation and guides
+2. **aws-knowledge-mcp-server** - Latest AWS updates and new features
+3. **fetch** - Fetch web content and convert to markdown
+4. **git** - Git operations and repository management
+5. **figma** - Design system integration and UI component access
+6. **context7** - Up-to-date library and framework documentation
 
-1. **AWS Observability** (Critical)
-   - CloudWatch Logs, Metrics, Alarms, Application Signals, CloudTrail
-   - Replaces direct aws-observability MCP server with guided workflows
-   - Better context management through keyword activation
-   - Install from: kiro.dev/powers
-
-2. **IAM Policy Autopilot** (Critical)
-   - Automates IAM policy generation from code
-   - Enforces least privilege (CIC's #1 security requirement)
-   - Replaces direct iam-policy-autopilot MCP server
-   - Install from: kiro.dev/powers
-
-3. **Build AWS infrastructure with CDK and CloudFormation** (Recommended)
-   - CDK best practices, CloudFormation validation, security compliance
-   - Replaces direct aws-iac MCP server with guided workflows
-   - Complements backend-standards.md steering
-   - Install from: kiro.dev/powers
-
-### Optional Powers
-
-These powers may be useful for specific projects but are not required:
-
-- **Build a Power**: Build custom Kiro Powers for team-specific workflows (install when creating custom powers like CIC Deployment Power)
-- **AWS Cost Optimization**: For production cost analysis (not critical for prototypes)
-- **Design to Code with Figma**: Connect Figma designs to code components, generate design system rules, maintain design-code consistency (useful for UI-heavy projects)
-- **Build an Agent with Strands**: Build multi-agent systems using AWS Strands framework (for projects requiring complex agent orchestration)
-- **Build an Agent with Amazon Bedrock AgentCore**: Build agents using Amazon Bedrock AgentCore (for projects using Bedrock-native agent patterns)
+**AWS Powers:**
+1. **aws-infrastructure-as-code** - CDK best practices and IaC validation
+2. **aws-observability** - CloudWatch logs, metrics, and Application Signals
+3. **aws-agentcore** - Build and test Bedrock AgentCore agents
+4. **strands** - Build AI agents with Strands SDK
 
 ---
-
-## Installation Instructions
-
-### 1. Install MCP Servers
-
-**Option A: Workspace-level (For project-specific configuration)**
-```bash
-# Create .kiro/settings directory if it doesn't exist
-mkdir -p .kiro/settings
-
-# Copy the mcp.json configuration above to .kiro/settings/mcp.json
-```
-
-**Option B: User-level (For personal configuration)**
-```bash
-# Create ~/.kiro/settings directory if it doesn't exist
-mkdir -p ~/.kiro/settings
-
-# Copy the mcp.json configuration above to ~/.kiro/settings/mcp.json
-```
-
-### 2. Install Kiro Powers
-
-**Via Kiro IDE**:
-1. Open "Powers" tab in side bar (Kiro ghost w/lightning bolt)
-2. Search for and install:
-   - AWS Observability
-   - IAM Policy Autopilot
-   - Build AWS Infrastructure with CDK and CloudFormation
-3. Browse Powers list for project-specific Powers and add as necessary
 
 ### MCP Server Descriptions
 

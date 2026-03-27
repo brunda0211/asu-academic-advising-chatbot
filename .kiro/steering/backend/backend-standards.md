@@ -6,21 +6,58 @@ fileMatchPattern: "backend/**/*"
 # CIC Backend Standards
 
 **Languages**: Lambdas (Python), CDK stack (TypeScript). 
-**Architecture**: Single stack unless complexity requires otherwise; serverless-first, cost-effective, resilient. Always use latest AWS resources/services; verify with MCP/web search before suggesting changes. Optimize for fewer resources while maintaining clarity. Never change strategy without approval. 
-
-## Project Structure
-
-```
-backend/
-├── lib/<project>-stack.ts  # CDK stack (TypeScript)
-├── lambda/<function>/      # Lambda handlers (Python)
-│   ├── index.py            # Entry point
-│   └── requirements.txt
-├── bin/                    # CDK app entry
-├── cdk.json, package.json, tsconfig.json
-```
-
+**Architecture**: Single stack unless complexity requires otherwise; serverless-first, cost-effective, resilient. Always use latest AWS resources/services; verify with `aws-knowledge-mcp-server` (https://knowledge-mcp.global.api.aws) for AWS blogs, latest updates, and best practices before suggesting changes. Optimize for fewer resources while maintaining clarity. Never change strategy without approval. 
 **Naming**: Lambda dirs (kebab-case: `resume-parser`), Python files (snake_case), CDK constructs (PascalCase: `UserTable`), Handler (always `lambda_handler(event, context)`).
+
+## Dependency Versions
+
+**Check latest versions BEFORE writing dependency files:**
+- npm: `npm view <package-name> version`
+- Python: Use Context7 or web search for PyPI versions
+- AWS: Use AWS documentation tools for latest runtimes
+
+**Version pinning:**
+- Python: Exact versions (e.g., `boto3==x.y.z`)
+- npm production: Exact versions (e.g., `"next": "x.y.z"`)
+- npm dev: Caret for minor updates (e.g., `"typescript": "^x.y.z"`)
+- Always look up the latest compatible version before writing dependency files — never assume a version number
+
+**Workflow:** Check latest versions (npm view, PyPI, Context7) → Verify compatibility with project constraints (e.g., Amplify-supported Next.js range) → Write dependency file
+
+## Build & Test Commands
+
+- Build: `cd backend && npm run build`
+- Synth (runs cdk-nag): `cd backend && cdk synth`
+- Deploy: `cd backend && cdk deploy`
+- Test: `cd backend && npm test`
+
+
+## Security Requirements (Non-Negotiable)
+
+**IAM Policies:**
+- Never use wildcard actions (`service:*`)
+- Never use wildcard resources (`*`)
+- Use CDK grant methods: `table.grantReadWriteData(fn)`, `bucket.grantRead(fn)`
+- One IAM role per Lambda function
+
+**Secrets:**
+- Store in Secrets Manager or SSM Parameter Store
+- Reference via environment variables
+- Never hardcode secret values or paths
+
+**Encryption:**
+- Enable encryption at rest (DynamoDB, S3, EFS)
+- Enforce HTTPS/TLS for all endpoints
+- Use `enforceSSL: true` on all S3 buckets
+
+**PII:**
+- Redact PII from CloudWatch logs
+- Use placeholders in test data: `[email]`, `[phone_number]`
+- Store PII in encrypted tables; validate and sanitize input
+
+**Authentication:**
+- Use Cognito for user authentication
+- Validate JWT tokens; implement session management; use MFA for admins
 
 ## CDK Context Variables
 
@@ -51,22 +88,28 @@ def create_response(status_code: int, body: dict) -> dict:
 
 ## Lambda Functions
 
-**Handler Pattern**: AWS clients at module level (reused across warm invocations); use `os.environ.get()` never `[]`; validate env vars at start; consistent response shape `{'statusCode': int, 'body': json.dumps(...)}}`; `print()` for logging (CloudWatch captures stdout); keep handlers thin.
+**Handler Pattern**: AWS clients at module level (reused across warm invocations); use `os.environ.get()` never `[]`; validate env vars at start; consistent response shape `{'statusCode': int, 'body': json.dumps(...)}}`; structured JSON logging via `logging` module (never raw `print()`); keep handlers thin.
 
 ```python
-import json, boto3, os
+import json, boto3, os, logging
+
+logger = logging.getLogger()
+logger.setLevel(os.environ.get('LOG_LEVEL', 'INFO'))
+
 dynamodb = boto3.resource('dynamodb')  # Module level
 
 def lambda_handler(event, context):
     try:
         table_name = os.environ.get('TABLE_NAME')
         if not table_name: raise ValueError("TABLE_NAME not set")
+        logger.info(json.dumps({'action': 'processing_request', 'table': table_name}))
         # Business logic
         return {'statusCode': 200, 'body': json.dumps({'data': result})}
     except ValueError as e:
+        logger.warning(json.dumps({'error': 'validation_error', 'detail': str(e)}))
         return {'statusCode': 400, 'body': json.dumps({'error': str(e)})}
     except Exception as e:
-        print(f"Error: {str(e)}")
+        logger.error(json.dumps({'error': 'unhandled_exception', 'detail': str(e)}))
         return {'statusCode': 500, 'body': json.dumps({'error': str(e)})}
 ```
 
@@ -113,6 +156,66 @@ const myBucket = new s3.Bucket(this, "MyBucket", {
 });
 myBucket.grantRead(myFunction);
 ```
+
+## CodeBuild Integration for Amplify
+
+When Amplify apps need to reference backend resources created by CDK, use CodeBuild to orchestrate the deployment sequence. This pattern is essential when:
+- Frontend needs backend API URLs, Cognito pool IDs, or other stack outputs
+- Deployment requires specific context variables (GitHub tokens, credentials)
+- You want automated CI/CD without manual CDK commands
+
+### Integration Pattern
+
+Create Amplify app early in CDK stack to get `appId` for CORS configuration, but construct the full Amplify URL for use in API Gateway, Lambda Function URLs, and other backend resources:
+
+```typescript
+// Create Amplify app early for CORS configuration
+const amplifyApp = new amplify.CfnApp(this, "AmplifyFrontendUI", {
+  name: `${projectPrefix}-frontend`,
+  repository: `https://github.com/${githubOwner}/${githubRepo}`,
+  oauthToken: githubTokenSecret.secretValue.unsafeUnwrap(),
+  platform: 'WEB_COMPUTE',
+  buildSpec: /* ... */,
+  // NO customRules for SSR apps
+});
+
+const mainBranch = new amplify.CfnBranch(this, "AmplifyMainBranch", {
+  appId: amplifyApp.attrAppId,
+  branchName: "main",
+  enableAutoBuild: true,
+  stage: "PRODUCTION",
+});
+
+// Construct Amplify app URL for CORS
+const amplifyAppUrl = `https://main.${amplifyApp.attrAppId}.amplifyapp.com`;
+console.log(`Frontend URL for CORS: ${amplifyAppUrl}`);
+
+// Use amplifyAppUrl in API Gateway CORS, Lambda Function URL CORS, etc.
+```
+
+### CodeBuild Deployment Script
+
+The deployment orchestration happens via a shell script that:
+1. Prompts for required credentials/configuration
+2. Creates IAM service role for CodeBuild
+3. Creates CodeBuild project with environment variables
+4. Starts the build with deploy or destroy action
+
+See cic-deployment agent for deployment script structure. The script should:
+- Create CodeBuild project with GitHub source
+- Pass all CDK context variables as CodeBuild environment variables
+- Use `buildspec.yml` for actual CDK commands
+- Support both deploy and destroy operations
+
+### BuildSpec Configuration
+
+Create `buildspec.yml` in repository root for CodeBuild execution. See cic-deployment agent for buildspec structure. Key requirements:
+- Install AWS CDK CLI globally
+- Navigate to backend directory
+- Pass context variables to all CDK commands (bootstrap, deploy, destroy)
+- Use conditional logic for deploy vs destroy
+
+This pattern ensures backend resources are created first, their outputs are available for Amplify environment variables, and the entire deployment is automated through CodeBuild.
 
 ## Amplify
 
@@ -230,6 +333,36 @@ Use CDK grant methods first (`table.grantReadWriteData(fn)`, `bucket.grantRead(f
 ## RAG Chatbots with S3 Vectors
 
 For projects that use Bedrock Knowledge Base + S3 Vectors for RAG, follow the patterns in #[[file:.kiro/steering/backend/s3-vectors-rag-chatbot.md]]. Covers S3 Vectors bucket/index setup (TypeScript + Python CDK), Bedrock KB wiring, Lambda retrieval, ingestion patterns, and cdk-nag suppressions.
+
+## API Gateway
+
+For projects that use API Gateway (REST API V1 or HTTP API V2), follow the patterns in #[[file:.kiro/steering/backend/api-gateway-patterns.md]]. Covers when to use each type, streaming support, authentication, CORS, Lambda integration, and monitoring.
+
+## Bedrock Integration
+
+For projects that use Amazon Bedrock for AI/ML capabilities, follow the patterns in #[[file:.kiro/steering/backend/bedrock-patterns.md]]. Covers model invocation (foundation models vs inference profiles), IAM permissions for cross-region profiles, streaming responses, CORS configuration, and common pitfalls.
+
+**CRITICAL - Model Availability Validation:**
+BEFORE writing ANY Bedrock code, validate model availability:
+1. Run `aws bedrock list-foundation-models --region <region>`
+2. Run `aws bedrock list-inference-profiles --region <region>`
+3. Prefer AWS-owned models (Nova, Titan) that don't require marketplace subscriptions
+4. If using third-party models (Claude, etc.), verify they're enabled in the account
+5. Document model selection rationale in ADR
+
+**Model Selection Priority:**
+1. AWS Nova models (no marketplace subscription needed)
+2. AWS Titan models (no marketplace subscription needed)
+3. Third-party models (Claude, etc.) - only if explicitly requested or required
+
+## Security Steering References
+
+For detailed security guidance beyond the summary above, consult these manual-inclusion files:
+- IAM & secrets management: #[[file:.kiro/steering/security/security-iam-secrets.md]]
+- Data & encryption: #[[file:.kiro/steering/security/security-data-encryption.md]]
+- Operations & resilience: #[[file:.kiro/steering/security/security-operations.md]]
+- Code & dependencies: #[[file:.kiro/steering/security/security-code-dependencies.md]]
+- Compliance & documentation: #[[file:.kiro/steering/security/security-compliance.md]]
 
 ## Security Scanning with cdk-nag
 

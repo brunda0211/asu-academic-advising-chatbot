@@ -36,6 +36,33 @@ Architecture sections in design.md must use this structure:
 - Layout direction: top-to-bottom (users at top, storage at bottom)
 - Page size: landscape 1100x850 for readability
 
+### Lambda Consolidation Principle
+
+**CRITICAL**: When designing architectures, consolidate Lambda functions to minimize operational complexity and cost:
+
+- If work can be done in 2 Lambda functions, do NOT create 4 or 5
+- Combine related operations into single functions with routing logic
+- **User preference**: Aim for 2-3 Lambda functions maximum for typical projects
+  - Lambda 1: Upload and ingestion operations
+  - Lambda 2: Chat/query handling
+  - Lambda 3: Additional features (notes, flashcards, export) if logic is similar
+
+- Only separate Lambdas when there are clear reasons:
+  - Different execution requirements (memory, timeout, runtime)
+  - Different IAM permissions (security isolation)
+  - Different scaling patterns (one high-volume, one low-volume)
+  - Different deployment lifecycles (frequently updated vs stable)
+
+**Examples:**
+- ✅ Single Lambda with routing for CRUD operations on same resource
+- ✅ Single Lambda handling multiple related API endpoints
+- ✅ Single Lambda for notes + flashcards (both summarize content, similar workflow)
+- ❌ Separate Lambda for each CRUD operation when they share permissions
+- ❌ Separate Lambda for each API endpoint when they have similar logic
+- ❌ 5 Lambdas when 2-3 would suffice
+
+**Document the decision**: If you choose to separate Lambdas, add an ADR explaining why consolidation wasn't appropriate.
+
 ### Generating PNG from Architecture
 
 After creating the draw.io XML in design.md, also generate a PNG version using the AWS Diagram MCP server (`generate_diagram` tool with the `diagrams` Python package). Save the PNG to `architecture_diagram/` at the repo root.

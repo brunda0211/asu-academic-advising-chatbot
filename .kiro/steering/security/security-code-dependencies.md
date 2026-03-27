@@ -1,6 +1,5 @@
 ---
-inclusion: fileMatch
-fileMatchPattern: "backend/**/*"
+inclusion: manual
 ---
 
 # Security: Code & Dependencies
