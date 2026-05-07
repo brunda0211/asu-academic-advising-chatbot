@@ -1,8 +1,14 @@
 #!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib';
+import { Aspects } from 'aws-cdk-lib';
+import { AwsSolutionsChecks } from 'cdk-nag';
 import { BackendStack } from '../lib/backend-stack';
 
 const app = new cdk.App();
+
+// ADR: cdk-nag at app level | Ensures all stacks get security checks automatically
+Aspects.of(app).add(new AwsSolutionsChecks({ verbose: true }));
+
 new BackendStack(app, 'BackendStack', {
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
